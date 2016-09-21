@@ -67,6 +67,7 @@ func main() {
 			os.Exit(0)
 		}
 	}
+	usage()
 }
 
 func usage() {

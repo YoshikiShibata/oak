@@ -75,7 +75,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Printf("jgo run [Java class file]\n")
+	fmt.Printf("jo run [Java main source file]\n")
 	os.Exit(1)
 }
 

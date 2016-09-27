@@ -83,14 +83,18 @@ func findPackage(lines []string) string {
 }
 
 func compileAndRun(src string) {
-	cmd := exec.Command("javac", src)
+	args := []string{"-d", binPath}
+	args = append(args, src)
+	cmd := exec.Command("javac", args...)
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
 		os.Exit(1)
 	}
 
-	cmd = exec.Command("java", src[:len(src)-5])
+	args = []string{"-classpath", binPath}
+	args = append(args, src[:len(src)-5])
+	cmd = exec.Command("java", args...)
 	redirect(cmd)
 	err = cmd.Run()
 	if err != nil {

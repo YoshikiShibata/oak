@@ -54,12 +54,16 @@ var commands = []*Command{
 	cmdRun,
 }
 
+const binPath = "/tmp/jo/bin"
+
 func main() {
 	flag.Parse()
 	args := flag.Args()
 	if len(args) < 1 {
 		usage()
 	}
+
+	recreateBin()
 
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] && cmd.Runnable() {
@@ -73,4 +77,55 @@ func main() {
 func usage() {
 	fmt.Printf("jgo run [Java class file]\n")
 	os.Exit(1)
+}
+
+// Every time when this command is executed, the bin directory will be
+// newly created by deleting the existing one.
+func recreateBin() {
+	removeDirectory(binPath)
+
+	err := os.MkdirAll(binPath, os.ModePerm)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
+	}
+}
+
+var pathSeparator string = string([]rune{os.PathSeparator})
+
+// removeDirectory removes all files including directories recursively.
+func removeDirectory(dirPath string) {
+	dir, err := os.Open(dirPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return
+		}
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
+	}
+
+	files, err := dir.Readdir(0) // all entries
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			removeDirectory(dirPath + pathSeparator + file.Name())
+			continue
+		}
+
+		err := os.Remove(dirPath + pathSeparator + file.Name())
+		if err != nil {
+			fmt.Printf("%v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	err = os.Remove(dirPath)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
+	}
 }

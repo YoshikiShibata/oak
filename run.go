@@ -52,6 +52,8 @@ func runRun(cmd *Command, args []string) {
 		compileAndRun(args[0])
 	} else {
 		fmt.Printf("Package is %q\n", p)
+		fmt.Println("Not Implemented Yet")
+		os.Exit(1)
 	}
 }
 

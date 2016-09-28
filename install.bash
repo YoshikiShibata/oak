@@ -11,7 +11,7 @@ cp jo ~/bin
 TOP_DIR=$PWD
 
 # Execute tests
-for dir in simpleRun packageRun;
+for dir in simpleRun packageRun bugfixes/001;
 do
     cd $TOP_DIR/tests/$dir
     ./run.bash

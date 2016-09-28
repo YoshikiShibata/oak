@@ -34,24 +34,24 @@ func runRun(cmd *Command, args []string) {
 
 	file, err := os.Open(args[0])
 	if err != nil {
-		fmt.Printf("%v\n", args[0], err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 	defer file.Close()
 
 	lines, err := readLines(file)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 
-	fmt.Printf("args = %v\n", args)
+	// fmt.Printf("args = %v\n", args)
 	p := findPackage(lines)
 	if p == "" {
-		fmt.Printf("No package\n")
-		compileAndRun(args[0])
+		compileAndRun(".", args[0])
 	} else {
-		fmt.Printf("Package is %q\n", p)
+		// fmt.Printf("Package is %q\n", p)
+		changeDirToSrc(p)
+		compileAndRun("..",
+			strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+args[0])
 	}
 }
 
@@ -82,36 +82,42 @@ func findPackage(lines []string) string {
 	return ""
 }
 
-func compileAndRun(src string) {
+func compileAndRun(runPath, src string) {
 	args := []string{"-d", binPath}
 	args = append(args, src)
+	fmt.Printf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
-		os.Exit(1)
+		exit(err, 1)
 	}
 
-	args = []string{"-classpath", binPath}
+	err = os.Chdir(runPath)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	args = []string{"-classpath", binPath + ":src"}
+	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
+	fmt.Printf("java %s\n", strings.Join(args, " "))
 	cmd = exec.Command("java", args...)
 	redirect(cmd)
 	err = cmd.Run()
 	if err != nil {
-		os.Exit(1)
+		exit(err, 1)
 	}
 }
 
 func redirect(cmd *exec.Cmd) {
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 	go func() {
 		io.Copy(os.Stderr, stderr)
@@ -119,4 +125,29 @@ func redirect(cmd *exec.Cmd) {
 	go func() {
 		io.Copy(os.Stdout, stdout)
 	}()
+}
+
+func changeDirToSrc(p string) {
+	paths := strings.Split(p, ".")
+
+	for i := 0; i < len(paths)+1; i++ {
+		err := os.Chdir("..")
+		if err != nil {
+			exit(err, 1)
+		}
+	}
+	_, err := os.Getwd()
+	if err != nil {
+		exit(err, 1)
+	}
+	// fmt.Printf("WD = %q\n", dir)
+	src, err := os.Open("src")
+	if err != nil {
+		exit(err, 1)
+	}
+	src.Close()
+	err = os.Chdir("src")
+	if err != nil {
+		exit(err, 1)
+	}
 }

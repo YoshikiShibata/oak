@@ -75,7 +75,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Printf("jgo run [Java class file]\n")
+	fmt.Printf("jo run [Java main source file]\n")
 	os.Exit(1)
 }
 
@@ -86,8 +86,7 @@ func recreateBin() {
 
 	err := os.MkdirAll(binPath, os.ModePerm)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 }
 
@@ -100,14 +99,12 @@ func removeDirectory(dirPath string) {
 		if os.IsNotExist(err) {
 			return
 		}
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 
 	files, err := dir.Readdir(0) // all entries
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 
 	for _, file := range files {
@@ -118,14 +115,12 @@ func removeDirectory(dirPath string) {
 
 		err := os.Remove(dirPath + pathSeparator + file.Name())
 		if err != nil {
-			fmt.Printf("%v\n", err)
-			os.Exit(1)
+			exit(err, 1)
 		}
 	}
 
 	err = os.Remove(dirPath)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
+		exit(err, 1)
 	}
 }

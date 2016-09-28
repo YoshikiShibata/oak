@@ -15,7 +15,7 @@ TOP_DIR=$PWD
 echo ""
 echo "testing ... "
 # Execute tests
-for dir in simpleRun packageRun bugfixes/001 bugfixes/002;
+for dir in simpleRun packageRun simpleTest bugfixes/001 bugfixes/002;
 do
     cd $TOP_DIR/tests/$dir
     ./run.bash

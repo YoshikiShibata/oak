@@ -98,7 +98,7 @@ func compileAndRun(runPath, src string) {
 		exit(err, 1)
 	}
 
-	args = []string{"-classpath", binPath}
+	args = []string{"-classpath", binPath + ":src"}
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
 	fmt.Printf("java %s\n", strings.Join(args, " "))

@@ -52,6 +52,7 @@ func (c *Command) Runnable() bool {
 // The order here is the order in which they are printed by `jgo help`.
 var commands = []*Command{
 	cmdRun,
+	cmdTest,
 }
 
 const binPath = "/tmp/jo/bin"

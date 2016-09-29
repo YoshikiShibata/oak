@@ -100,3 +100,8 @@ func compileAndRunTest(runPath, src string) {
 		exit(err, 1)
 	}
 }
+
+func findJunitJarPath() string {
+	junitPath := os.Getenv("JUNIT_HOME")
+	panic("Not Implemented Yet")
+}

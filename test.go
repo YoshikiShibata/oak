@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -69,5 +70,33 @@ func listTestFiles(dir string) []string {
 }
 
 func compileAndRunTest(runPath, src string) {
-	panic("Not Implemented Yet")
+	junitPath := os.Getenv("JUNIT_HOME")
+	args := []string{"-d", binPath}
+	args = append(args, src)
+	args = append(args, []string{"-classpath", ".:" + junitPath + pathSeparator + "junit-4.12.jar"}...)
+	fmt.Printf("javac %s\n", strings.Join(args, " "))
+	cmd := exec.Command("javac", args...)
+	redirect(cmd)
+	err := cmd.Run()
+	if err != nil {
+		exit(err, 1)
+	}
+
+	err = os.Chdir(runPath)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	args = []string{"-classpath", binPath + ":src:" + junitPath + pathSeparator + "junit-4.12.jar" + ":" +
+		junitPath + pathSeparator + "hamcrest-core-1.3.jar"}
+	args = append(args, "-server", "org.junit.runner.JUnitCore")
+	src = strings.Replace(src, pathSeparator, ".", -1)
+	args = append(args, src[:len(src)-5])
+	fmt.Printf("java %s\n", strings.Join(args, " "))
+	cmd = exec.Command("java", args...)
+	redirect(cmd)
+	err = cmd.Run()
+	if err != nil {
+		exit(err, 1)
+	}
 }

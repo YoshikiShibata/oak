@@ -4,7 +4,7 @@
 
 cd src/ch02/ex03
 
-jo run ParallelStreamPerformance.java
+oak run ParallelStreamPerformance.java
 
 if [ $? != 0 ]
 then

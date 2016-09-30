@@ -32,19 +32,8 @@ func runRun(cmd *Command, args []string) {
 		os.Exit(1)
 	}
 
-	file, err := os.Open(args[0])
-	if err != nil {
-		exit(err, 1)
-	}
-	defer file.Close()
-
-	lines, err := readLines(file)
-	if err != nil {
-		exit(err, 1)
-	}
-
 	// fmt.Printf("args = %v\n", args)
-	p := findPackage(lines)
+	p := findPackage(args[0])
 	if p == "" {
 		compileAndRun(".", args[0])
 	} else {
@@ -69,17 +58,6 @@ func readLines(reader io.Reader) ([]string, error) {
 		}
 		lines = append(lines, line)
 	}
-}
-
-func findPackage(lines []string) string {
-	for _, line := range lines {
-		if strings.HasPrefix(line, "package") {
-			tokens := strings.Split(line, " ")
-			tokens = strings.Split(tokens[1], ";")
-			return tokens[0]
-		}
-	}
-	return ""
 }
 
 func compileAndRun(runPath, src string) {

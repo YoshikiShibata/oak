@@ -2,7 +2,7 @@
 
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
-jo test
+oak test
 
 if [ $? != 0 ]
 then

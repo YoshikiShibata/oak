@@ -52,9 +52,10 @@ func (c *Command) Runnable() bool {
 // The order here is the order in which they are printed by `jgo help`.
 var commands = []*Command{
 	cmdRun,
+	cmdTest,
 }
 
-const binPath = "/tmp/jo/bin"
+const binPath = "/tmp/oak/bin"
 
 func main() {
 	flag.Parse()
@@ -75,7 +76,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Printf("jo run [Java main source file]\n")
+	fmt.Printf("oak run [Java main source file]\n")
 	os.Exit(1)
 }
 

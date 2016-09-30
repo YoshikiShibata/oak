@@ -55,7 +55,7 @@ var commands = []*Command{
 	cmdTest,
 }
 
-const binPath = "/tmp/jo/bin"
+const binPath = "/tmp/oak/bin"
 
 func main() {
 	flag.Parse()
@@ -76,7 +76,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Printf("jo run [Java main source file]\n")
+	fmt.Printf("oak run [Java main source file]\n")
 	os.Exit(1)
 }
 

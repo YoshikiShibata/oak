@@ -4,13 +4,13 @@
 
 echo ""
 echo "building ... "
-go build -o jo
+go build -o oak
 if [ $? != 0 ]
 then 
     exit 1
 fi
 
-cp jo ~/bin
+cp oak ~/bin
 
 TOP_DIR=$PWD
 

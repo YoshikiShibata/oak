@@ -109,6 +109,7 @@ func listTestFiles(dir string) []string {
 	if err != nil {
 		exit(err, 1)
 	}
+	defer d.Close()
 
 	files, err := d.Readdir(0)
 	if err != nil {
@@ -128,9 +129,9 @@ func listTestFiles(dir string) []string {
 }
 
 func compileAndRunTest(runPath, srcPath, src string) {
-	junitPath := os.Getenv("JUNIT_HOME")
+	junitPath := junitClassPath()
 	args := []string{"-d", binPath, "-Xlint:unchecked"}
-	args = append(args, []string{"-classpath", ".:" + junitPath + pathSeparator + "junit-4.12.jar"}...)
+	args = append(args, []string{"-classpath", ".:" + junitPath}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)
 	}
@@ -148,8 +149,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		exit(err, 1)
 	}
 
-	args = []string{"-classpath", binPath + ":src:" + junitPath + pathSeparator + "junit-4.12.jar" + ":" +
-		junitPath + pathSeparator + "hamcrest-core-1.3.jar"}
+	args = []string{"-classpath", binPath + ":src:" + junitPath}
 	args = append(args, "-server", "org.junit.runner.JUnitCore")
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
@@ -160,4 +160,43 @@ func compileAndRunTest(runPath, srcPath, src string) {
 	if err != nil {
 		exit(err, 1)
 	}
+}
+
+func junitClassPath() string {
+	junitPath := os.Getenv("JUNIT_HOME")
+	if junitPath == "" {
+		exit(fmt.Errorf("JUNIT_HOME is not set"), 1)
+	}
+	d, err := os.Open(junitPath)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	defer d.Close()
+
+	files, err := d.Readdir(0)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	if len(files) == 0 {
+		exit(fmt.Errorf("Jar files of JUNIT are not found"), 1)
+	}
+
+	jarFiles := make([]string, 0, len(files))
+	for _, file := range files {
+		name := file.Name()
+		if !strings.HasSuffix(name, ".jar") {
+			continue
+		}
+		if strings.HasPrefix(name, "junit-") ||
+			strings.HasPrefix(name, "hamcrest-core-") {
+			jarFiles = append(jarFiles, name)
+		}
+	}
+	if len(jarFiles) != 2 {
+		exit(fmt.Errorf("Jar files of JUNIT are not found"), 1)
+	}
+	return junitPath + pathSeparator + jarFiles[0] + ":" +
+		junitPath + pathSeparator + jarFiles[1]
 }

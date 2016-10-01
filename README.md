@@ -3,5 +3,5 @@ oak is a command line tool for Java. oak is inspired by "go" tool for the Go pro
 
 Currently following commands are supported:
 
-* go run [Java file]
-* go test
+* oak run [Java file]
+* oak test

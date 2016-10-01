@@ -2,6 +2,7 @@
 
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
+export OAK_HOME=$PWD
 echo ""
 echo "building ... "
 go build -o oak
@@ -10,12 +11,19 @@ then
     exit 1
 fi
 
-cp oak ~/bin
+rm -fr $OAK_HOME/bin
+mkdir $OAK_HOME/bin
+cp oak $OAK_HOME/bin
 
 TOP_DIR=$PWD
 
 # Execute tests
-for dir in simpleRun simpleTest bugfixes/001 bugfixes/002 packageTest;
+for dir in simpleRun \
+		simpleTest \
+		simpleTest2 \
+		packageTest \
+		bugfixes/001 \
+		bugfixes/002 ;
 do
     cd $TOP_DIR/tests/$dir
 	echo ""

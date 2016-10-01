@@ -2,7 +2,7 @@
 
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
-oak test
+$OAK_HOME/bin/oak test
 
 if [ $? != 0 ]
 then

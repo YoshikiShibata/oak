@@ -21,29 +21,87 @@ func init() {
 
 func testRun(cmd *Command, args []string) {
 	if len(args) == 0 {
-		findTestsAndRunThemLocally()
-		return
+		switch {
+		case findTestsAndRunThem() == true:
+			return
+		case findTestsAndRunThemLocally() == true:
+			return
+		}
 	}
 	panic("Not Implemented Yet")
 }
 
-func findTestsAndRunThemLocally() {
+func findTestsAndRunThemLocally() bool {
 	testFiles := listTestFiles(".")
 	if len(testFiles) == 0 {
-		exit(fmt.Errorf("No Test file Found"), 1)
+		return false
 	}
 
+	compiled := false
 	for _, file := range listTestFiles(".") {
-		fmt.Printf("%q\n", file)
 		p := findPackage(file)
 		if p == "" {
-			compileAndRunTest(".", file)
-		} else {
-			changeDirToSrc(p)
-			compileAndRunTest("..",
-				strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+file)
+			compileAndRunTest(".", "", file)
+			compiled = true
 		}
 	}
+	return compiled
+}
+
+func findTestsAndRunThem() bool {
+	testSrcDir, testDir, ok := findTestSourceDirectory()
+	if !ok {
+		return false
+	}
+	compiled := false
+	for _, file := range listTestFiles(testSrcDir) {
+		err := os.Chdir(testDir)
+		if err != nil {
+			exit(err, 1)
+		}
+
+		p := findPackage(testSrcDir + pathSeparator + file)
+		if p == "" {
+			compileAndRunTest("..", "../src", file)
+		} else {
+			compileAndRunTest("..", "../src",
+				strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+file)
+		}
+		compiled = true
+	}
+	return compiled
+}
+
+func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
+	dir, err := os.Getwd()
+	if err != nil {
+		exit(err, 1)
+	}
+
+	lastIndex := strings.LastIndex(dir, "/test/")
+	if lastIndex > 0 {
+		return dir, dir[:lastIndex] + "/test/", true
+	}
+
+	// This is a corner case where no package is used,
+	// but "src" and "test" directories are used.
+	if strings.HasSuffix(dir, "/test") {
+		return dir, dir, true
+	}
+
+	lastIndex = strings.LastIndex(dir, "/src/")
+	if lastIndex >= 0 {
+		testDir = dir[:lastIndex] + "/test/"
+		return testDir + dir[lastIndex+5:], testDir, true
+	}
+
+	// This is a corner case where no package is used,
+	// but "src" and "test" directories are used.
+	if strings.HasSuffix(dir, "/src") {
+		testSrcDir = dir[:len(dir)-3] + "test"
+		return testSrcDir, testSrcDir, true
+	}
+	return "", "", false
 }
 
 func listTestFiles(dir string) []string {
@@ -69,11 +127,14 @@ func listTestFiles(dir string) []string {
 	return testFiles
 }
 
-func compileAndRunTest(runPath, src string) {
+func compileAndRunTest(runPath, srcPath, src string) {
 	junitPath := os.Getenv("JUNIT_HOME")
 	args := []string{"-d", binPath}
-	args = append(args, src)
 	args = append(args, []string{"-classpath", ".:" + junitPath + pathSeparator + "junit-4.12.jar"}...)
+	if srcPath != "" {
+		args = append(args, "-sourcepath", srcPath)
+	}
+	args = append(args, src)
 	fmt.Printf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
@@ -100,10 +161,3 @@ func compileAndRunTest(runPath, src string) {
 		exit(err, 1)
 	}
 }
-
-/*
-func findJunitJarPath() string {
-	junitPath := os.Getenv("JUNIT_HOME")
-	panic("Not Implemented Yet")
-}
-*/

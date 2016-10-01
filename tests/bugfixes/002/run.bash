@@ -4,7 +4,7 @@
 
 cd src/ch03/ex05
 
-oak run ImageTransformation.java
+$OAK_HOME/bin/oak run ImageTransformation.java
 
 if [ $? != 0 ]
 then

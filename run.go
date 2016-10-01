@@ -61,7 +61,7 @@ func readLines(reader io.Reader) ([]string, error) {
 }
 
 func compileAndRun(runPath, src string) {
-	args := []string{"-d", binPath}
+	args := []string{"-d", binPath, "-Xlint:unchecked"}
 	args = append(args, src)
 	fmt.Printf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)

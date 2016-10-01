@@ -129,7 +129,7 @@ func listTestFiles(dir string) []string {
 
 func compileAndRunTest(runPath, srcPath, src string) {
 	junitPath := os.Getenv("JUNIT_HOME")
-	args := []string{"-d", binPath}
+	args := []string{"-d", binPath, "-Xlint:unchecked"}
 	args = append(args, []string{"-classpath", ".:" + junitPath + pathSeparator + "junit-4.12.jar"}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)

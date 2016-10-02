@@ -4,7 +4,7 @@
 
 cd src
 
-$OAK_HOME/bin/oak test
+$OAK_HOME/bin/oak test -v
 
 if [ $? != 0 ]
 then
@@ -13,7 +13,7 @@ fi
 
 cd ../test
 
-$OAK_HOME/bin/oak test
+$OAK_HOME/bin/oak test -v
 
 if [ $? != 0 ]
 then

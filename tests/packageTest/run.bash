@@ -6,7 +6,7 @@ TOP_DIR=$PWD
 
 cd src/ch01/ex09
 echo "testing from $PWD"
-$OAK_HOME/bin/oak test
+$OAK_HOME/bin/oak test -v
 
 if [ $? != 0 ]
 then
@@ -16,7 +16,7 @@ fi
 cd $TOP_DIR
 cd test/ch01/ex09
 echo "testing from $PWD"
-$OAK_HOME/bin/oak test
+$OAK_HOME/bin/oak test -v
 
 if [ $? != 0 ]
 then

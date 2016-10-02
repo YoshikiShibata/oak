@@ -3,7 +3,7 @@
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 cd src/jp/ne/sonet/ca2/yshibata
 
-$OAK_HOME/bin/oak run HelloWorld.java
+$OAK_HOME/bin/oak run -v HelloWorld.java
 
 if [ $? != 0 ]
 then

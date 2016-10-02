@@ -5,3 +5,5 @@ Currently following commands are supported:
 
 * oak run [Java file]
 * oak test
+
+All commands support -v option to show detail messages

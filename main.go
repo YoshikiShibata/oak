@@ -55,11 +55,20 @@ var commands = []*Command{
 	cmdTest,
 }
 
+var vFlag = flag.Bool("v", false, "verbose")
+
+func vPrintf(format string, args ...interface{}) {
+	if *vFlag {
+		fmt.Printf(format, args...)
+	}
+}
+
 const binPath = "/tmp/oak/bin"
 
 func main() {
 	flag.Parse()
-	args := flag.Args()
+	args := parseVerboseFlag()
+
 	if len(args) < 1 {
 		usage()
 	}
@@ -73,6 +82,19 @@ func main() {
 		}
 	}
 	usage()
+}
+
+// parseVerboseFlag check if one of arguments is "-v" and return arguments execpt the flag.
+func parseVerboseFlag() []string {
+	args := make([]string, 0, flag.NArg())
+	for _, arg := range flag.Args() {
+		if arg != "-v" {
+			args = append(args, arg)
+		} else {
+			*vFlag = true
+		}
+	}
+	return args
 }
 
 func usage() {

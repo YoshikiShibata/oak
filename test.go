@@ -136,7 +136,8 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		args = append(args, "-sourcepath", srcPath)
 	}
 	args = append(args, src)
-	fmt.Printf("javac %s\n", strings.Join(args, " "))
+	vPrintf("javac %s\n", strings.Join(args, " "))
+
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
 	err := cmd.Run()
@@ -153,7 +154,8 @@ func compileAndRunTest(runPath, srcPath, src string) {
 	args = append(args, "-server", "org.junit.runner.JUnitCore")
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
-	fmt.Printf("java %s\n", strings.Join(args, " "))
+	vPrintf("java %s\n", strings.Join(args, " "))
+
 	cmd = exec.Command("java", args...)
 	redirect(cmd)
 	err = cmd.Run()

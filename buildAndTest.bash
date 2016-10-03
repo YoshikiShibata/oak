@@ -23,7 +23,8 @@ for dir in simpleRun \
 		simpleTest2 \
 		packageTest \
 		bugfixes/001 \
-		bugfixes/002 ;
+		bugfixes/002 \
+		issues/008;
 do
     cd $TOP_DIR/tests/$dir
 	echo ""

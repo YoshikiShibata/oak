@@ -35,12 +35,12 @@ func runRun(cmd *Command, args []string) {
 	// fmt.Printf("args = %v\n", args)
 	p := findPackage(args[0])
 	if p == "" {
-		compileAndRun(".", args[0])
+		compileAndRun(".", args[0], args[1:])
 	} else {
 		// fmt.Printf("Package is %q\n", p)
 		changeDirToSrc(p)
 		compileAndRun("..",
-			strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+args[0])
+			strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+args[0], args[1:])
 	}
 }
 
@@ -60,7 +60,7 @@ func readLines(reader io.Reader) ([]string, error) {
 	}
 }
 
-func compileAndRun(runPath, src string) {
+func compileAndRun(runPath, src string, javaArgs []string) {
 	args := []string{"-d", binPath, "-Xlint:unchecked"}
 	args = append(args, src)
 	vPrintf("javac %s\n", strings.Join(args, " "))
@@ -79,6 +79,7 @@ func compileAndRun(runPath, src string) {
 	args = []string{"-classpath", binPath + ":src"}
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
+	args = append(args, javaArgs...)
 	vPrintf("java %s\n", strings.Join(args, " "))
 	cmd = exec.Command("java", args...)
 	redirect(cmd)

@@ -64,6 +64,7 @@ func vPrintf(format string, args ...interface{}) {
 }
 
 const binPath = "/tmp/oak/bin"
+const srcPath = "/tmp/oak/src" // for JUnitRunner
 
 func main() {
 	flag.Parse()

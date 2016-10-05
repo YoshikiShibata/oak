@@ -56,9 +56,16 @@ var commands = []*Command{
 }
 
 var vFlag = flag.Bool("v", false, "verbose")
+var dFlag = flag.Bool("d", false, "debug")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {
+		fmt.Printf(format, args...)
+	}
+}
+
+func dPrintf(format string, args ...interface{}) {
+	if *dFlag {
 		fmt.Printf(format, args...)
 	}
 }

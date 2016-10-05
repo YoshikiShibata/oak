@@ -65,7 +65,7 @@ func createAndCompileJUnitRunner() {
 	args := []string{"-d", binPath, "-Xlint:unchecked"}
 	args = append(args, []string{"-classpath", ".:" + junitPath}...)
 	args = append(args, strings.Join(paths, pathSeparator)+".java")
-	vPrintf("javac %s\n", strings.Join(args, " "))
+	dPrintf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
 	err = cmd.Run()
@@ -184,7 +184,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		args = append(args, "-sourcepath", srcPath)
 	}
 	args = append(args, src)
-	vPrintf("javac %s\n", strings.Join(args, " "))
+	dPrintf("javac %s\n", strings.Join(args, " "))
 
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
@@ -207,7 +207,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
-	vPrintf("java %s\n", strings.Join(args, " "))
+	dPrintf("java %s\n", strings.Join(args, " "))
 
 	cmd = exec.Command("java", args...)
 	redirect(cmd)

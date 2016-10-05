@@ -2,8 +2,22 @@
 
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
+function createRunner {
+    rm runner.go
+    echo "package main" > runner.go
+    echo "" >> runner.go
+    echo "const runner=\"jp.ne.sonet.ca2.yshibata.JUnitRunner\"" >> runner.go
+    echo "" >> runner.go
+    echo "const runnerJavaSrc = \`" >> runner.go
+    cat runner/src/jp/ne/sonet/ca2/yshibata/JUnitRunner.java >> runner.go
+    echo "\`">> runner.go
+}
+
 export OAK_HOME=$PWD
 echo ""
+
+createRunner
+
 echo "building ... "
 go build -o oak
 if [ $? != 0 ]

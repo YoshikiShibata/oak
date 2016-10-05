@@ -2,9 +2,9 @@
 
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
-cd src/ch08/ex10
+cd src/ch05/ex04
 
-$OAK_HOME/bin/oak run -v JavaScanner.java ~/tools/jdk1.8.0_92_src
+$OAK_HOME/bin/oak run -v Cal.java 11 1959
 
 if [ $? != 0 ]
 then

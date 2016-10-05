@@ -3,7 +3,7 @@
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
 function createRunner {
-    rm runner.go
+    rm -f runner.go
     echo "// Copyright (C) 2016 Yoshiki Shibata. All rights reserved." > runner.go
     echo "" >> runner.go
     echo "package main" >> runner.go

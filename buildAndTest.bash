@@ -4,7 +4,9 @@
 
 function createRunner {
     rm runner.go
-    echo "package main" > runner.go
+    echo "// Copyright (C) 2016 Yoshiki Shibata. All rights reserved." > runner.go
+    echo "" >> runner.go
+    echo "package main" >> runner.go
     echo "" >> runner.go
     echo "const runner=\"jp.ne.sonet.ca2.yshibata.JUnitRunner\"" >> runner.go
     echo "" >> runner.go

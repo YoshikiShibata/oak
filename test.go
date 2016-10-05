@@ -20,6 +20,8 @@ func init() {
 }
 
 func testRun(cmd *Command, args []string) {
+	createAndCompileJUnitRunner()
+
 	if len(args) == 0 {
 		switch {
 		case findTestsAndRunThem() == true:
@@ -29,6 +31,52 @@ func testRun(cmd *Command, args []string) {
 		}
 	}
 	panic("Not Implemented Yet")
+}
+
+func createAndCompileJUnitRunner() {
+	cwd, err := os.Getwd()
+	if err != nil {
+		exit(err, 1)
+	}
+
+	paths := strings.Split(runner, ".")
+	dir := srcPath + pathSeparator +
+		strings.Join(paths[:len(paths)-1], pathSeparator)
+	err = os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	javaFile := dir + pathSeparator + paths[len(paths)-1] + ".java"
+	f, err := os.Create(javaFile)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	f.WriteString(runnerJavaSrc)
+	f.Close()
+
+	err = os.Chdir(srcPath)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	junitPath := junitClassPath()
+	args := []string{"-d", binPath, "-Xlint:unchecked"}
+	args = append(args, []string{"-classpath", ".:" + junitPath}...)
+	args = append(args, strings.Join(paths, pathSeparator)+".java")
+	vPrintf("javac %s\n", strings.Join(args, " "))
+	cmd := exec.Command("javac", args...)
+	redirect(cmd)
+	err = cmd.Run()
+	if err != nil {
+		exit(err, 1)
+	}
+
+	err = os.Chdir(cwd)
+	if err != nil {
+		exit(err, 1)
+	}
 }
 
 func findTestsAndRunThemLocally() bool {
@@ -151,7 +199,12 @@ func compileAndRunTest(runPath, srcPath, src string) {
 	}
 
 	args = []string{"-classpath", binPath + ":src:" + junitPath}
-	args = append(args, "-server", "org.junit.runner.JUnitCore")
+
+	args = append(args, runner)
+	if *vFlag {
+		args = append(args, "-v")
+	}
+
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
 	vPrintf("java %s\n", strings.Join(args, " "))

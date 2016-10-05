@@ -64,6 +64,7 @@ func vPrintf(format string, args ...interface{}) {
 }
 
 const binPath = "/tmp/oak/bin"
+const srcPath = "/tmp/oak/src" // for JUnitRunner
 
 func main() {
 	flag.Parse()
@@ -113,7 +114,7 @@ func recreateBin() {
 	}
 }
 
-var pathSeparator string = string([]rune{os.PathSeparator})
+var pathSeparator = string([]rune{os.PathSeparator})
 
 // removeDirectory removes all files including directories recursively.
 func removeDirectory(dirPath string) {

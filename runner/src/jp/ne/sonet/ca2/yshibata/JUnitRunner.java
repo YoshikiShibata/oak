@@ -22,13 +22,26 @@ import org.junit.runner.notification.RunListener;
  */
 public class JUnitRunner {
 
+    private static boolean verbose = false;
+
     public static void main(String[] args) {
         if (args.length == 0) {
             showUsage();
         }
 
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("-v")) {
+                verbose = true;
+                args[i] = null;
+            }
+        }
+
         List<Class<?>> classes = new ArrayList<>();
         for (String testClassName : args) {
+            if (testClassName == null) {
+                continue;
+            }
+
             try {
                 classes.add(Class.forName(testClassName));
             } catch (ClassNotFoundException ex) {
@@ -47,6 +60,9 @@ public class JUnitRunner {
         System.exit(1);
     }
 
+    /**
+     * This TestListener is basically a copy from org.juit.internal.TextListener
+     */
     private static class TestListener extends RunListener {
 
         private final PrintStream writer;
@@ -64,7 +80,11 @@ public class JUnitRunner {
 
         @Override
         public void testStarted(Description description) {
-            writer.append('.');
+            if (verbose) {
+                writer.printf("%s # %s: %n", description.getClassName(), description.getMethodName());
+            } else {
+                writer.append('.');
+            }
         }
 
         @Override

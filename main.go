@@ -136,6 +136,7 @@ func removeDirectory(dirPath string) {
 	if err != nil {
 		exit(err, 1)
 	}
+	dir.Close()
 
 	for _, file := range files {
 		if file.IsDir() {

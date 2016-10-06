@@ -70,8 +70,10 @@ func dPrintf(format string, args ...interface{}) {
 	}
 }
 
-const binPath = "/tmp/oak/bin"
-const srcPath = "/tmp/oak/src" // for JUnitRunner
+const (
+	oakBinPath = "/tmp/oak/bin"
+	oakSrcPath = "/tmp/oak/src" // for JUnitRunner
+)
 
 func main() {
 	flag.Parse()
@@ -113,9 +115,9 @@ func usage() {
 // Every time when this command is executed, the bin directory will be
 // newly created by deleting the existing one.
 func recreateBin() {
-	removeDirectory(binPath)
+	removeDirectory(oakBinPath)
 
-	err := os.MkdirAll(binPath, os.ModePerm)
+	err := os.MkdirAll(oakBinPath, os.ModePerm)
 	if err != nil {
 		exit(err, 1)
 	}

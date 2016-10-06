@@ -20,7 +20,7 @@ func init() {
 }
 
 func testRun(cmd *Command, args []string) {
-	createAndCompileJUnitRunner()
+	generateAndCompileJUnitRunner()
 
 	if len(args) == 0 {
 		switch {
@@ -35,16 +35,39 @@ func testRun(cmd *Command, args []string) {
 
 var junitPath = junitClassPath()
 
-func createAndCompileJUnitRunner() {
+// createAndCompileJUnitRunner generates the JUnitRunner Java source code,
+// and then compile the source code against JUnit libraries.
+func generateAndCompileJUnitRunner() {
+	src := generateJUnitRunnerSource()
+
+	// same the current directory
 	cwd, err := os.Getwd()
 	if err != nil {
 		exit(err, 1)
 	}
 
+	// change to the source directory
+	err = os.Chdir(oakSrcPath)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	compileAsTest("", src)
+
+	// restore to the original directory
+	err = os.Chdir(cwd)
+	if err != nil {
+		exit(err, 1)
+	}
+}
+
+// generateJUnitRunnerSource generates the JUnitRunner Java source code,
+// then returns its file path which is relative to oakSrcPath
+func generateJUnitRunnerSource() string {
 	paths := strings.Split(runner, ".")
-	dir := srcPath + pathSeparator +
+	dir := oakSrcPath + pathSeparator +
 		strings.Join(paths[:len(paths)-1], pathSeparator)
-	err = os.MkdirAll(dir, os.ModePerm)
+	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		exit(err, 1)
 	}
@@ -57,18 +80,7 @@ func createAndCompileJUnitRunner() {
 
 	f.WriteString(runnerJavaSrc)
 	f.Close()
-
-	err = os.Chdir(srcPath)
-	if err != nil {
-		exit(err, 1)
-	}
-
-	compileAsTest("", strings.Join(paths, pathSeparator)+".java")
-
-	err = os.Chdir(cwd)
-	if err != nil {
-		exit(err, 1)
-	}
+	return strings.Join(paths, pathSeparator) + ".java"
 }
 
 func findTestsAndRunThemLocally() bool {
@@ -169,7 +181,7 @@ func listTestFiles(dir string) []string {
 }
 
 func compileAsTest(srcPath, src string) {
-	args := []string{"-d", binPath, "-Xlint:unchecked"}
+	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
 	args = append(args, []string{"-classpath", ".:" + junitPath}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)
@@ -193,7 +205,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		exit(err, 1)
 	}
 
-	args := []string{"-classpath", binPath + ":src:" + junitPath}
+	args := []string{"-classpath", oakBinPath + ":src:" + junitPath}
 	args = append(args, runner)
 	if *vFlag {
 		args = append(args, "-v")

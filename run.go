@@ -61,7 +61,7 @@ func readLines(reader io.Reader) ([]string, error) {
 }
 
 func compileAndRun(runPath, src string, javaArgs []string) {
-	args := []string{"-d", binPath, "-Xlint:unchecked"}
+	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
 	args = append(args, src)
 	dPrintf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
@@ -76,7 +76,7 @@ func compileAndRun(runPath, src string, javaArgs []string) {
 		exit(err, 1)
 	}
 
-	args = []string{"-classpath", binPath + ":src"}
+	args = []string{"-classpath", oakBinPath + ":src"}
 	src = strings.Replace(src, pathSeparator, ".", -1)
 	args = append(args, src[:len(src)-5])
 	args = append(args, javaArgs...)

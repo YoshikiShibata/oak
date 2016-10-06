@@ -114,9 +114,9 @@ func findTestsAndRunThem() bool {
 
 		p := findPackage(testSrcDir + pathSeparator + file)
 		if p == "" {
-			compileAndRunTest("..", "../src", file)
+			compileAndRunTest("..", ".."+pathSeparator+"src", file)
 		} else {
-			compileAndRunTest("..", "../src",
+			compileAndRunTest("..", ".."+pathSeparator+"src",
 				strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+file)
 		}
 		compiled = true
@@ -130,26 +130,26 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
 		exit(err, 1)
 	}
 
-	lastIndex := strings.LastIndex(dir, "/test/")
+	lastIndex := strings.LastIndex(dir, pathSeparator+"test"+pathSeparator)
 	if lastIndex > 0 {
-		return dir, dir[:lastIndex] + "/test/", true
+		return dir, dir[:lastIndex] + pathSeparator + "test" + pathSeparator, true
 	}
 
 	// This is a corner case where no package is used,
 	// but "src" and "test" directories are used.
-	if strings.HasSuffix(dir, "/test") {
+	if strings.HasSuffix(dir, pathSeparator+"test") {
 		return dir, dir, true
 	}
 
-	lastIndex = strings.LastIndex(dir, "/src/")
+	lastIndex = strings.LastIndex(dir, pathSeparator+"src"+pathSeparator)
 	if lastIndex >= 0 {
-		testDir = dir[:lastIndex] + "/test/"
+		testDir = dir[:lastIndex] + pathSeparator + "test" + pathSeparator
 		return testDir + dir[lastIndex+5:], testDir, true
 	}
 
 	// This is a corner case where no package is used,
 	// but "src" and "test" directories are used.
-	if strings.HasSuffix(dir, "/src") {
+	if strings.HasSuffix(dir, pathSeparator+"src") {
 		testSrcDir = dir[:len(dir)-3] + "test"
 		return testSrcDir, testSrcDir, true
 	}

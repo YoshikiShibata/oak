@@ -186,6 +186,9 @@ func compileAsTest(srcPath, src string) {
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)
 	}
+	if *eFlag != "" {
+		args = append(args, "-encoding", *eFlag)
+	}
 	args = append(args, src)
 	dPrintf("javac %s\n", strings.Join(args, " "))
 

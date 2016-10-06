@@ -57,6 +57,7 @@ var commands = []*Command{
 
 var vFlag = flag.Bool("v", false, "verbose for test command")
 var dFlag = flag.Bool("d", false, "debug")
+var eFlag = flag.String("encoding", "", "encoding")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {

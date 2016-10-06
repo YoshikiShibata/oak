@@ -62,6 +62,9 @@ func readLines(reader io.Reader) ([]string, error) {
 
 func compileAndRun(runPath, src string, javaArgs []string) {
 	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
+	if *eFlag != "" {
+		args = append(args, "-encoding", *eFlag)
+	}
 	args = append(args, src)
 	dPrintf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)

@@ -70,11 +70,6 @@ func dPrintf(format string, args ...interface{}) {
 	}
 }
 
-const (
-	oakBinPath = "/tmp/oak/bin"
-	oakSrcPath = "/tmp/oak/src" // for JUnitRunner
-)
-
 func main() {
 	flag.Parse()
 	args := parseVerboseFlag()

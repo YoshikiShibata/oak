@@ -40,6 +40,7 @@ for dir in simpleRun \
 		simpleTest2 \
 		simpleTest2_2 \
 		packageTest \
+		packageTest_2 \
 		bugfixes/001 \
 		bugfixes/002 \
 		issues/008;

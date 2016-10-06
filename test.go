@@ -258,6 +258,6 @@ func junitClassPath() string {
 	if len(jarFiles) != 2 {
 		exit(fmt.Errorf("Jar files of JUNIT are not found"), 1)
 	}
-	return junitPath + pathSeparator + jarFiles[0] + ":" +
+	return junitPath + pathSeparator + jarFiles[0] + pathListSeparator +
 		junitPath + pathSeparator + jarFiles[1]
 }

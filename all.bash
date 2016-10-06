@@ -35,7 +35,8 @@ TOP_DIR=$PWD
 
 # Execute tests
 for dir in simpleRun \
-		simpleTest \
+		simpleTest1 \
+		simpleTest1_2 \
 		simpleTest2 \
 		packageTest \
 		bugfixes/001 \

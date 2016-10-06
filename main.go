@@ -55,7 +55,7 @@ var commands = []*Command{
 	cmdTest,
 }
 
-var vFlag = flag.Bool("v", false, "verbose")
+var vFlag = flag.Bool("v", false, "verbose for test command")
 var dFlag = flag.Bool("d", false, "debug")
 
 func vPrintf(format string, args ...interface{}) {

@@ -65,14 +65,14 @@ func generateAndCompileJUnitRunner() {
 // then returns its file path which is relative to oakSrcPath
 func generateJUnitRunnerSource() string {
 	paths := strings.Split(runner, ".")
-	dir := oakSrcPath + pathSeparator +
-		strings.Join(paths[:len(paths)-1], pathSeparator)
+	dir := oakSrcPath + PS +
+		strings.Join(paths[:len(paths)-1], PS)
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		exit(err, 1)
 	}
 
-	javaFile := dir + pathSeparator + paths[len(paths)-1] + ".java"
+	javaFile := dir + PS + paths[len(paths)-1] + ".java"
 	f, err := os.Create(javaFile)
 	if err != nil {
 		exit(err, 1)
@@ -80,7 +80,7 @@ func generateJUnitRunnerSource() string {
 
 	f.WriteString(runnerJavaSrc)
 	f.Close()
-	return strings.Join(paths, pathSeparator) + ".java"
+	return strings.Join(paths, PS) + ".java"
 }
 
 func findTestsAndRunThemLocally() bool {
@@ -112,12 +112,12 @@ func findTestsAndRunThem() bool {
 			exit(err, 1)
 		}
 
-		p := findPackage(testSrcDir + pathSeparator + file)
+		p := findPackage(testSrcDir + PS + file)
 		if p == "" {
-			compileAndRunTest("..", ".."+pathSeparator+"src", file)
+			compileAndRunTest("..", ".."+PS+"src", file)
 		} else {
-			compileAndRunTest("..", ".."+pathSeparator+"src",
-				strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+file)
+			compileAndRunTest("..", ".."+PS+"src",
+				strings.Replace(p, ".", PS, -1)+PS+file)
 		}
 		compiled = true
 	}
@@ -130,26 +130,26 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
 		exit(err, 1)
 	}
 
-	lastIndex := strings.LastIndex(dir, pathSeparator+"test"+pathSeparator)
+	lastIndex := strings.LastIndex(dir, PS+"test"+PS)
 	if lastIndex > 0 {
-		return dir, dir[:lastIndex] + pathSeparator + "test" + pathSeparator, true
+		return dir, dir[:lastIndex] + PS + "test" + PS, true
 	}
 
 	// This is a corner case where no package is used,
 	// but "src" and "test" directories are used.
-	if strings.HasSuffix(dir, pathSeparator+"test") {
+	if strings.HasSuffix(dir, PS+"test") {
 		return dir, dir, true
 	}
 
-	lastIndex = strings.LastIndex(dir, pathSeparator+"src"+pathSeparator)
+	lastIndex = strings.LastIndex(dir, PS+"src"+PS)
 	if lastIndex >= 0 {
-		testDir = dir[:lastIndex] + pathSeparator + "test" + pathSeparator
+		testDir = dir[:lastIndex] + PS + "test" + PS
 		return testDir + dir[lastIndex+5:], testDir, true
 	}
 
 	// This is a corner case where no package is used,
 	// but "src" and "test" directories are used.
-	if strings.HasSuffix(dir, pathSeparator+"src") {
+	if strings.HasSuffix(dir, PS+"src") {
 		testSrcDir = dir[:len(dir)-3] + "test"
 		return testSrcDir, testSrcDir, true
 	}
@@ -182,7 +182,7 @@ func listTestFiles(dir string) []string {
 
 func compileAsTest(srcPath, src string) {
 	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
-	args = append(args, []string{"-classpath", "." + pathListSeparator + junitPath}...)
+	args = append(args, []string{"-classpath", "." + PLS + junitPath}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)
 	}
@@ -205,13 +205,13 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		exit(err, 1)
 	}
 
-	args := []string{"-classpath", oakBinPath + pathListSeparator + "src" + pathListSeparator + junitPath}
+	args := []string{"-classpath", oakBinPath + PLS + "src" + PLS + junitPath}
 	args = append(args, runner)
 	if *vFlag {
 		args = append(args, "-v")
 	}
 
-	src = strings.Replace(src, pathSeparator, ".", -1)
+	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
 	dPrintf("java %s\n", strings.Join(args, " "))
 
@@ -258,6 +258,6 @@ func junitClassPath() string {
 	if len(jarFiles) != 2 {
 		exit(fmt.Errorf("Jar files of JUNIT are not found"), 1)
 	}
-	return junitPath + pathSeparator + jarFiles[0] + pathListSeparator +
-		junitPath + pathSeparator + jarFiles[1]
+	return junitPath + PS + jarFiles[0] + PLS +
+		junitPath + PS + jarFiles[1]
 }

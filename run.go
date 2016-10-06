@@ -40,7 +40,7 @@ func runRun(cmd *Command, args []string) {
 		// fmt.Printf("Package is %q\n", p)
 		changeDirToSrc(p)
 		compileAndRun("..",
-			strings.Replace(p, ".", pathSeparator, -1)+pathSeparator+args[0], args[1:])
+			strings.Replace(p, ".", PS, -1)+PS+args[0], args[1:])
 	}
 }
 
@@ -77,7 +77,7 @@ func compileAndRun(runPath, src string, javaArgs []string) {
 	}
 
 	args = []string{"-classpath", oakBinPath + ":src"}
-	src = strings.Replace(src, pathSeparator, ".", -1)
+	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
 	args = append(args, javaArgs...)
 	dPrintf("java %s\n", strings.Join(args, " "))

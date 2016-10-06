@@ -118,8 +118,8 @@ func recreateBin() {
 	}
 }
 
-var pathSeparator = string([]rune{os.PathSeparator})
-var pathListSeparator = string([]rune{os.PathListSeparator})
+var PS = string([]rune{os.PathSeparator})
+var PLS = string([]rune{os.PathListSeparator})
 
 // removeDirectory removes all files including directories recursively.
 func removeDirectory(dirPath string) {
@@ -138,11 +138,11 @@ func removeDirectory(dirPath string) {
 
 	for _, file := range files {
 		if file.IsDir() {
-			removeDirectory(dirPath + pathSeparator + file.Name())
+			removeDirectory(dirPath + PS + file.Name())
 			continue
 		}
 
-		err := os.Remove(dirPath + pathSeparator + file.Name())
+		err := os.Remove(dirPath + PS + file.Name())
 		if err != nil {
 			exit(err, 1)
 		}

@@ -38,6 +38,7 @@ for dir in simpleRun \
 		simpleTest1 \
 		simpleTest1_2 \
 		simpleTest2 \
+		simpleTest2_2 \
 		packageTest \
 		bugfixes/001 \
 		bugfixes/002 \

@@ -182,7 +182,7 @@ func listTestFiles(dir string) []string {
 
 func compileAsTest(srcPath, src string) {
 	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
-	args = append(args, []string{"-classpath", ".:" + junitPath}...)
+	args = append(args, []string{"-classpath", "." + pathListSeparator + junitPath}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)
 	}
@@ -205,7 +205,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		exit(err, 1)
 	}
 
-	args := []string{"-classpath", oakBinPath + ":src:" + junitPath}
+	args := []string{"-classpath", oakBinPath + pathListSeparator + "src" + pathListSeparator + junitPath}
 	args = append(args, runner)
 	if *vFlag {
 		args = append(args, "-v")

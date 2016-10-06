@@ -79,7 +79,7 @@ func compileAndRun(runPath, src string, javaArgs []string) {
 		exit(err, 1)
 	}
 
-	args = []string{"-classpath", oakBinPath + ":src"}
+	args = []string{"-classpath", oakBinPath + PLS + "src"}
 	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
 	args = append(args, javaArgs...)

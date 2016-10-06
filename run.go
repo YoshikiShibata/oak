@@ -132,4 +132,12 @@ func changeDirToSrc(p string) {
 	if err != nil {
 		exit(err, 1)
 	}
+
+	if *dFlag {
+		wd, err := os.Getwd()
+		if err != nil {
+			exit(err, 1)
+		}
+		dPrintf("CWD = %s\n", wd)
+	}
 }

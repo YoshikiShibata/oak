@@ -61,7 +61,7 @@ func readLines(reader io.Reader) ([]string, error) {
 }
 
 func compileAndRun(runPath, src string, javaArgs []string) {
-	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
+	args := []string{"-d", oakBinPath, "-Xlint:unchecked", "-sourcepath", "."}
 	if *eFlag != "" {
 		args = append(args, "-encoding", *eFlag)
 	}

@@ -156,30 +156,6 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
 	return "", "", false
 }
 
-func listTestFiles(dir string) []string {
-	d, err := os.Open(dir)
-	if err != nil {
-		exit(err, 1)
-	}
-	defer d.Close()
-
-	files, err := d.Readdir(0)
-	if err != nil {
-		exit(err, 1)
-	}
-	if len(files) == 0 {
-		return nil
-	}
-
-	testFiles := make([]string, 0, len(files))
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), "Test.java") {
-			testFiles = append(testFiles, file.Name())
-		}
-	}
-	return testFiles
-}
-
 func compileAsTest(srcPath, src string) {
 	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
 	args = append(args, []string{"-classpath", "." + PLS + junitPath}...)

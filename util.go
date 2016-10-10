@@ -10,7 +10,8 @@ import (
 
 func exit(err error, exitCode int) {
 	fmt.Printf("%v\n", err)
-	os.Exit(exitCode)
+	panic("")
+	// os.Exit(exitCode)
 }
 
 func findPackage(javaFile string) string {
@@ -32,4 +33,40 @@ func findPackage(javaFile string) string {
 		}
 	}
 	return ""
+}
+
+func listJavaFiles(dir string) []string {
+	d, err := os.Open(dir)
+	if err != nil {
+		exit(err, 1)
+	}
+	defer d.Close()
+
+	files, err := d.Readdir(0)
+	if err != nil {
+		exit(err, 1)
+	}
+	if len(files) == 0 {
+		return nil
+	}
+
+	javaFiles := make([]string, 0, len(files))
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".java") {
+			javaFiles = append(javaFiles, file.Name())
+		}
+	}
+	return javaFiles
+}
+
+func listTestFiles(dir string) []string {
+	javaFiles := listJavaFiles(dir)
+	testFiles := make([]string, 0, len(javaFiles))
+
+	for _, file := range javaFiles {
+		if strings.HasSuffix(file, "Test.java") {
+			testFiles = append(testFiles, file)
+		}
+	}
+	return testFiles
 }

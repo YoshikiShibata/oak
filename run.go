@@ -122,7 +122,7 @@ func changeDirToSrc(p string) {
 	if err != nil {
 		exit(err, 1)
 	}
-	// fmt.Printf("WD = %q\n", dir)
+	// fmt.Printf("WD = %q\n", cwd)
 	src, err := os.Open("src")
 	if err != nil {
 		exit(err, 1)

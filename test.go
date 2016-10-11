@@ -124,60 +124,51 @@ func findTestsAndRunThem() bool {
 	return compiled
 }
 
+// findTestSourceDirectory determines the two directories for test:
+// One directory is where all *Test.java files are located, another
+// directory is the "test" directory.
 func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
+	defer func() {
+		dPrintf("testSrcDir = %q, testDir = %q, ok = %v\n", testSrcDir, testDir, ok)
+	}()
+
+	pkg := findPackageFromCurrentlyDirectory()
+	dPrintf("package = %q\n", pkg)
+
 	dir, err := os.Getwd()
 	if err != nil {
 		exit(err, 1)
 	}
 
-	lastIndex := strings.LastIndex(dir, PS+"test"+PS)
-	if lastIndex > 0 {
-		return dir, dir[:lastIndex] + PS + "test" + PS, true
-	}
+	srcPath := ""
 
-	// This is a corner case where no package is used,
-	// but "src" and "test" directories are used.
-	if strings.HasSuffix(dir, PS+"test") {
-		return dir, dir, true
-	}
-
-	lastIndex = strings.LastIndex(dir, PS+"src"+PS)
-	if lastIndex >= 0 {
-		testDir = dir[:lastIndex] + PS + "test" + PS
-		return testDir + dir[lastIndex+5:], testDir, true
-	}
-
-	// This is a corner case where no package is used,
-	// but "src" and "test" directories are used.
-	if strings.HasSuffix(dir, PS+"src") {
-		testSrcDir = dir[:len(dir)-3] + "test"
-		return testSrcDir, testSrcDir, true
-	}
-	return "", "", false
-}
-
-func listTestFiles(dir string) []string {
-	d, err := os.Open(dir)
-	if err != nil {
-		exit(err, 1)
-	}
-	defer d.Close()
-
-	files, err := d.Readdir(0)
-	if err != nil {
-		exit(err, 1)
-	}
-	if len(files) == 0 {
-		return nil
-	}
-
-	testFiles := make([]string, 0, len(files))
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), "Test.java") {
-			testFiles = append(testFiles, file.Name())
+	if pkg != "" {
+		srcPath = PS + strings.Replace(pkg, ".", PS, -1)
+		lastIndex := strings.LastIndex(dir, srcPath)
+		if lastIndex < 0 {
+			exit(fmt.Errorf("directory doesn't match with the package"), 1)
 		}
+		dir = dir[:lastIndex]
+		dPrintf("New dir = %q\n", dir)
 	}
-	return testFiles
+
+	// This is a corner case in which there is no "test" and "src" directory, but
+	// all Java files may be put into the same directory
+	if !strings.HasSuffix(dir, PS+"test") &&
+		!strings.HasSuffix(dir, PS+"src") {
+		return "", "", false
+	}
+
+	if strings.HasSuffix(dir, PS+"test") {
+		return dir + srcPath, dir, true
+	}
+
+	if strings.HasSuffix(dir, PS+"src") {
+		testDir = dir[:len(dir)-3] + "test"
+		return testDir + srcPath, testDir, true
+	}
+
+	return "", "", false
 }
 
 func compileAsTest(srcPath, src string) {

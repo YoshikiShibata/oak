@@ -10,8 +10,11 @@ import (
 
 func exit(err error, exitCode int) {
 	fmt.Printf("%v\n", err)
-	panic("")
-	// os.Exit(exitCode)
+	if *dFlag {
+		panic("")
+	} else {
+		os.Exit(exitCode)
+	}
 }
 
 func findPackage(javaFile string) string {
@@ -33,6 +36,20 @@ func findPackage(javaFile string) string {
 		}
 	}
 	return ""
+}
+
+func findPackageFromCurrentlyDirectory() string {
+	javaFiles := listJavaFiles(".")
+	if len(javaFiles) == 0 {
+		exit(fmt.Errorf(".java files are not found"), 1)
+	}
+	pkg := findPackage(javaFiles[0])
+	for _, file := range javaFiles[1:] {
+		if pkg != findPackage(file) {
+			exit(fmt.Errorf("multiple packages exist"), 1)
+		}
+	}
+	return pkg
 }
 
 func listJavaFiles(dir string) []string {

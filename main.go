@@ -119,7 +119,10 @@ func recreateBin() {
 	}
 }
 
+// PS stands for Path Separator as a string
 var PS = string([]rune{os.PathSeparator})
+
+// PLS stands for Path List Sperator as a string
 var PLS = string([]rune{os.PathListSeparator})
 
 // removeDirectory removes all files including directories recursively.

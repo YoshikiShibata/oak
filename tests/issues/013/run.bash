@@ -4,7 +4,7 @@
 
 cd ch01/ex09
 
-$OAK_HOME/bin/oak test -d
+$OAK_HOME/bin/oak test -v 
 
 if [ $? != 0 ]
 then

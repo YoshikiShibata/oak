@@ -26,8 +26,6 @@ func testRun(cmd *Command, args []string) {
 		switch {
 		case findTestsAndRunThem() == true:
 			return
-		case findTestsAndRunThemLocally() == true:
-			return
 		}
 	}
 	panic("Not Implemented Yet")
@@ -83,27 +81,18 @@ func generateJUnitRunnerSource() string {
 	return strings.Join(paths, PS) + ".java"
 }
 
-func findTestsAndRunThemLocally() bool {
-	testFiles := listTestFiles(".")
-	if len(testFiles) == 0 {
-		return false
-	}
-
-	compiled := false
-	for _, file := range listTestFiles(".") {
-		p := findPackage(file)
-		if p == "" {
-			compileAndRunTest(".", "", file)
-			compiled = true
-		}
-	}
-	return compiled
-}
-
 func findTestsAndRunThem() bool {
 	testSrcDir, testDir, ok := findTestSourceDirectory()
 	if !ok {
 		return false
+	}
+
+	runPath := "."
+	srcPath := ""
+
+	if strings.HasSuffix(testDir, PS+"test") {
+		runPath = ".."
+		srcPath = ".." + PS + "src"
 	}
 	compiled := false
 	for _, file := range listTestFiles(testSrcDir) {
@@ -113,12 +102,12 @@ func findTestsAndRunThem() bool {
 		}
 
 		p := findPackage(testSrcDir + PS + file)
-		if p == "" {
-			compileAndRunTest("..", ".."+PS+"src", file)
-		} else {
-			compileAndRunTest("..", ".."+PS+"src",
-				strings.Replace(p, ".", PS, -1)+PS+file)
+		pkgDir := ""
+		if p != "" {
+			pkgDir = strings.Replace(p, ".", PS, -1) + PS
 		}
+
+		compileAndRunTest(runPath, srcPath, pkgDir+file)
 		compiled = true
 	}
 	return compiled
@@ -152,13 +141,6 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
 		dPrintf("New dir = %q\n", dir)
 	}
 
-	// This is a corner case in which there is no "test" and "src" directory, but
-	// all Java files may be put into the same directory
-	if !strings.HasSuffix(dir, PS+"test") &&
-		!strings.HasSuffix(dir, PS+"src") {
-		return "", "", false
-	}
-
 	if strings.HasSuffix(dir, PS+"test") {
 		return dir + srcPath, dir, true
 	}
@@ -168,7 +150,9 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
 		return testDir + srcPath, testDir, true
 	}
 
-	return "", "", false
+	// This is a corner case in which there is no "test" and "src" directory, but
+	// all Java files may be put into the same directory
+	return dir + srcPath, dir, true
 }
 
 func compileAsTest(srcPath, src string) {

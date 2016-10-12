@@ -42,6 +42,12 @@ func (c *Command) Name() string {
 	return name
 }
 
+func (c *Command) Usage() {
+	fmt.Fprintf(os.Stderr, "usage: %s\n\n", c.UsageLine)
+	fmt.Fprintf(os.Stderr, "%s\n", strings.TrimSpace(c.Long))
+	os.Exit(2)
+}
+
 // Runnable reports whether the command can be run; otherwise
 // it is a documentation pseudo-command such as importpath.
 func (c *Command) Runnable() bool {
@@ -53,6 +59,7 @@ func (c *Command) Runnable() bool {
 var commands = []*Command{
 	cmdRun,
 	cmdTest,
+	cmdVersion,
 }
 
 var vFlag = flag.Bool("v", false, "verbose for test command")

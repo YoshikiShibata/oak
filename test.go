@@ -21,14 +21,7 @@ func init() {
 
 func testRun(cmd *Command, args []string) {
 	generateAndCompileJUnitRunner()
-
-	if len(args) == 0 {
-		switch {
-		case findTestsAndRunThem() == true:
-			return
-		}
-	}
-	panic("Not Implemented Yet")
+	findTestsAndRunThem()
 }
 
 var junitPath = junitClassPath()
@@ -81,10 +74,10 @@ func generateJUnitRunnerSource() string {
 	return strings.Join(paths, PS) + ".java"
 }
 
-func findTestsAndRunThem() bool {
+func findTestsAndRunThem() {
 	testSrcDir, testDir, ok := findTestSourceDirectory()
 	if !ok {
-		return false
+		exit(fmt.Errorf("No test files are found"), 1)
 	}
 
 	runPath := "."
@@ -92,10 +85,15 @@ func findTestsAndRunThem() bool {
 
 	if strings.HasSuffix(testDir, PS+"test") {
 		runPath = ".."
-		srcPath = ".." + PS + "src"
+		srcPath = ".." + PS + "src" + PLS + ".." + PS + "test"
 	}
-	compiled := false
-	for _, file := range listTestFiles(testSrcDir) {
+
+	testFiles := listTestFiles(testSrcDir)
+	if len(testFiles) == 0 {
+		exit(fmt.Errorf("No test files are found"), 1)
+	}
+
+	for _, file := range testFiles {
 		err := os.Chdir(testDir)
 		if err != nil {
 			exit(err, 1)
@@ -108,9 +106,7 @@ func findTestsAndRunThem() bool {
 		}
 
 		compileAndRunTest(runPath, srcPath, pkgDir+file)
-		compiled = true
 	}
-	return compiled
 }
 
 // findTestSourceDirectory determines the two directories for test:

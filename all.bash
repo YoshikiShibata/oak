@@ -20,16 +20,15 @@ echo ""
 
 createRunner
 
+rm -fr $OAK_HOME/bin
+mkdir $OAK_HOME/bin
+
 echo "building ... "
-go build -o oak
+go build -o bin/oak
 if [ $? != 0 ]
 then 
     exit 1
 fi
-
-rm -fr $OAK_HOME/bin
-mkdir $OAK_HOME/bin
-cp oak $OAK_HOME/bin
 
 TOP_DIR=$PWD
 

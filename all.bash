@@ -44,7 +44,8 @@ for dir in simpleRun \
 		bugfixes/001 \
 		bugfixes/002 \
 		issues/008 \
-		issues/013;
+		issues/013 \
+		issues/019;
 do
     cd $TOP_DIR/tests/$dir
 	echo ""

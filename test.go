@@ -75,7 +75,7 @@ func generateJUnitRunnerSource() string {
 }
 
 func findTestsAndRunThem() {
-	testSrcDir, testDir, ok := findTestSourceDirectory()
+	testSrcDir, testDir, ok, pkgName := findTestSourceDirectory()
 	if !ok {
 		exit(fmt.Errorf("No test files are found"), 1)
 	}
@@ -93,16 +93,17 @@ func findTestsAndRunThem() {
 		exit(fmt.Errorf("No test files are found"), 1)
 	}
 
+	pkgDir := ""
+	if pkgName != "" {
+		pkgDir = strings.Replace(pkgName, ".", PS, -1) + PS
+	}
+
 	for _, file := range testFiles {
+		// copmileAndRunTest() will change the current directory.
+		// So make sure to be the right directory every time.
 		err := os.Chdir(testDir)
 		if err != nil {
 			exit(err, 1)
-		}
-
-		p := findPackage(testSrcDir + PS + file)
-		pkgDir := ""
-		if p != "" {
-			pkgDir = strings.Replace(p, ".", PS, -1) + PS
 		}
 
 		compileAndRunTest(runPath, srcPath, pkgDir+file)
@@ -112,7 +113,7 @@ func findTestsAndRunThem() {
 // findTestSourceDirectory determines the two directories for test:
 // One directory is where all *Test.java files are located, another
 // directory is the "test" directory.
-func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
+func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName string) {
 	defer func() {
 		dPrintf("testSrcDir = %q, testDir = %q, ok = %v\n", testSrcDir, testDir, ok)
 	}()
@@ -138,17 +139,17 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool) {
 	}
 
 	if strings.HasSuffix(dir, PS+"test") {
-		return dir + srcPath, dir, true
+		return dir + srcPath, dir, true, pkg
 	}
 
 	if strings.HasSuffix(dir, PS+"src") {
 		testDir = dir[:len(dir)-3] + "test"
-		return testDir + srcPath, testDir, true
+		return testDir + srcPath, testDir, true, pkg
 	}
 
 	// This is a corner case in which there is no "test" and "src" directory, but
 	// all Java files may be put into the same directory
-	return dir + srcPath, dir, true
+	return dir + srcPath, dir, true, pkg
 }
 
 func compileAsTest(srcPath, src string) {

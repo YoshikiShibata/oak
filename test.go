@@ -10,7 +10,7 @@ import (
 )
 
 var cmdTest = &Command{
-	UsageLine: "test [arguments...]",
+	UsageLine: "test [-v]",
 	Short:     "compile and run JUnit Java program",
 	Long:      `Test compiles JUnit program and runs JUnit test methods.`,
 }

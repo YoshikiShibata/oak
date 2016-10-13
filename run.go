@@ -109,26 +109,21 @@ func redirect(cmd *exec.Cmd) {
 	}()
 }
 
-func changeDirToSrc(p string) {
-	paths := strings.Split(p, ".")
+func changeDirToSrc(pkg string) {
+	dir, err := os.Getwd()
+	if err != nil {
+		exit(err, 1)
+	}
 
-	for i := 0; i < len(paths)+1; i++ {
-		err := os.Chdir("..")
-		if err != nil {
-			exit(err, 1)
-		}
+	srcPath := PS + strings.Replace(pkg, ".", PS, -1)
+	lastIndex := strings.LastIndex(dir, srcPath)
+	if lastIndex < 0 {
+		exit(fmt.Errorf("directory doesn't match with the package"), 1)
 	}
-	_, err := os.Getwd()
-	if err != nil {
-		exit(err, 1)
-	}
-	// fmt.Printf("WD = %q\n", cwd)
-	src, err := os.Open("src")
-	if err != nil {
-		exit(err, 1)
-	}
-	src.Close()
-	err = os.Chdir("src")
+	dir = dir[:lastIndex]
+	dPrintf("src dir = %q\n", dir)
+
+	err = os.Chdir(dir)
 	if err != nil {
 		exit(err, 1)
 	}

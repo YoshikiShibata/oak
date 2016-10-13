@@ -132,7 +132,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 		srcPath = PS + strings.Replace(pkg, ".", PS, -1)
 		lastIndex := strings.LastIndex(dir, srcPath)
 		if lastIndex < 0 {
-			exit(fmt.Errorf("directory doesn't match with the package"), 1)
+			exit(fmt.Errorf("directory(%q) doesn't match with the package(%q)", dir, pkg), 1)
 		}
 		dir = dir[:lastIndex]
 		dPrintf("New dir = %q\n", dir)

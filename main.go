@@ -82,8 +82,14 @@ func main() {
 	flag.Parse()
 	args := parseVerboseFlag()
 
-	if len(args) < 1 {
-		usage()
+	if len(args) == 0 {
+		help([]string{})
+		return
+	}
+
+	if args[0] == "help" {
+		help(args[1:])
+		return
 	}
 
 	recreateBin()
@@ -94,7 +100,7 @@ func main() {
 			os.Exit(0)
 		}
 	}
-	usage()
+	help([]string{})
 }
 
 // parseVerboseFlag check if one of arguments is "-v" and return arguments execpt the flag.
@@ -108,11 +114,6 @@ func parseVerboseFlag() []string {
 		}
 	}
 	return args
-}
-
-func usage() {
-	fmt.Printf("oak run [Java main source file]\n")
-	os.Exit(1)
 }
 
 // Every time when this command is executed, the bin directory will be

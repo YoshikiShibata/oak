@@ -12,7 +12,7 @@ import (
 )
 
 var cmdRun = &Command{
-	UsageLine: "run [arguments...]",
+	UsageLine: "run [Java source file] [arguments]",
 	Short:     "compile and run Java program",
 	Long:      `Run compiles and runs the class which has main method.`,
 }

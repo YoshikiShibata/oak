@@ -144,7 +144,14 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 
 	if strings.HasSuffix(dir, PS+"src") {
 		testDir = dir[:len(dir)-3] + "test"
-		return testDir + srcPath, testDir, true, pkg
+		f, err := os.Open(testDir)
+		if err != nil {
+			// no "test" directory, use "src" directory
+			return dir + srcPath, dir, true, pkg
+		} else {
+			f.Close()
+			return testDir + srcPath, testDir, true, pkg
+		}
 	}
 
 	// This is a corner case in which there is no "test" and "src" directory, but

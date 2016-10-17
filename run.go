@@ -66,10 +66,10 @@ func readLines(reader io.Reader) ([]string, error) {
 	}
 }
 
-func compileAndRun(runPath, src string, srcs []string, javaArgs []string) {
+func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string) {
 	compile(srcs)
 	changeDirectoryTo(runPath)
-	run(runPath, src, javaArgs)
+	run(runPath, mainSrc, javaArgs)
 }
 
 func compile(srcs []string) {
@@ -87,10 +87,13 @@ func compile(srcs []string) {
 	}
 }
 
-func run(runPath, src string, javaArgs []string) {
+func run(runPath, mainSrc string, javaArgs []string) {
 	args := []string{"-classpath", oakBinPath + PLS + "src"}
-	src = strings.Replace(src, PS, ".", -1)
-	args = append(args, src[:len(src)-5])
+
+	mainClass := strings.Replace(mainSrc, PS, ".", -1)
+	mainClass = mainClass[:len(mainClass)-len(".java")]
+
+	args = append(args, mainClass)
 	args = append(args, javaArgs...)
 	dPrintf("java %s\n", strings.Join(args, " "))
 	cmd := exec.Command("java", args...)

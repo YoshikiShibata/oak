@@ -20,6 +20,7 @@ func init() {
 }
 
 func testRun(cmd *Command, args []string) {
+	recreateBin()
 	generateAndCompileJUnitRunner()
 	findTestsAndRunThem()
 }

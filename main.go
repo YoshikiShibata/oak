@@ -92,8 +92,6 @@ func main() {
 		return
 	}
 
-	recreateBin()
-
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] && cmd.Runnable() {
 			cmd.Run(cmd, args[1:])

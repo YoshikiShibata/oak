@@ -32,6 +32,8 @@ func runRun(cmd *Command, args []string) {
 		os.Exit(1)
 	}
 
+	recreateBin()
+
 	javaFiles := listNonTestFiles(".")
 
 	// fmt.Printf("args = %v\n", args)

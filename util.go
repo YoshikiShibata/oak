@@ -17,6 +17,13 @@ func exit(err error, exitCode int) {
 	}
 }
 
+func changeDirectoryTo(path string) {
+	err := os.Chdir(path)
+	if err != nil {
+		exit(err, 1)
+	}
+}
+
 func findPackage(javaFile string) string {
 	file, err := os.Open(javaFile)
 	if err != nil {
@@ -77,13 +84,21 @@ func listJavaFiles(dir string) []string {
 }
 
 func listTestFiles(dir string) []string {
+	return listFiles(dir, true)
+}
+
+func listNonTestFiles(dir string) []string {
+	return listFiles(dir, false)
+}
+
+func listFiles(dir string, testFile bool) []string {
 	javaFiles := listJavaFiles(dir)
-	testFiles := make([]string, 0, len(javaFiles))
+	files := make([]string, 0, len(javaFiles))
 
 	for _, file := range javaFiles {
-		if strings.HasSuffix(file, "Test.java") {
-			testFiles = append(testFiles, file)
+		if strings.HasSuffix(file, "Test.java") == testFile {
+			files = append(files, file)
 		}
 	}
-	return testFiles
+	return files
 }

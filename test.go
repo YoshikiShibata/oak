@@ -37,19 +37,11 @@ func generateAndCompileJUnitRunner() {
 		exit(err, 1)
 	}
 
-	// change to the source directory
-	err = os.Chdir(oakSrcPath)
-	if err != nil {
-		exit(err, 1)
-	}
-
+	changeDirectoryTo(oakSrcPath)
 	compileAsTest("", src)
 
 	// restore to the original directory
-	err = os.Chdir(cwd)
-	if err != nil {
-		exit(err, 1)
-	}
+	changeDirectoryTo(cwd)
 }
 
 // generateJUnitRunnerSource generates the JUnitRunner Java source code,
@@ -101,10 +93,7 @@ func findTestsAndRunThem() {
 	for _, file := range testFiles {
 		// copmileAndRunTest() will change the current directory.
 		// So make sure to be the right directory every time.
-		err := os.Chdir(testDir)
-		if err != nil {
-			exit(err, 1)
-		}
+		changeDirectoryTo(testDir)
 
 		compileAndRunTest(runPath, srcPath, pkgDir+file)
 	}
@@ -182,10 +171,7 @@ func compileAsTest(srcPath, src string) {
 func compileAndRunTest(runPath, srcPath, src string) {
 	compileAsTest(srcPath, src)
 
-	err := os.Chdir(runPath)
-	if err != nil {
-		exit(err, 1)
-	}
+	changeDirectoryTo(runPath)
 
 	args := []string{"-classpath", oakBinPath + PLS + "src" + PLS + junitPath}
 	args = append(args, runner)
@@ -199,7 +185,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 
 	cmd := exec.Command("java", args...)
 	redirect(cmd)
-	err = cmd.Run()
+	err := cmd.Run()
 	if err != nil {
 		exit(err, 1)
 	}

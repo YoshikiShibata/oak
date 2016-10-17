@@ -32,15 +32,21 @@ func runRun(cmd *Command, args []string) {
 		os.Exit(1)
 	}
 
+	javaFiles := listNonTestFiles(".")
+
 	// fmt.Printf("args = %v\n", args)
 	p := findPackage(args[0])
 	if p == "" {
-		compileAndRun(".", args[0], args[1:])
+		compileAndRun(".", args[0], []string{args[0]}, args[1:])
 	} else {
 		// fmt.Printf("Package is %q\n", p)
 		changeDirToSrc(p)
-		compileAndRun("..",
-			strings.Replace(p, ".", PS, -1)+PS+args[0], args[1:])
+		pathPrefix := strings.Replace(p, ".", PS, -1) + PS
+		for i := 0; i < len(javaFiles); i++ {
+			javaFiles[i] = pathPrefix + javaFiles[i]
+		}
+
+		compileAndRun("..", pathPrefix+args[0], javaFiles, args[1:])
 	}
 }
 
@@ -60,12 +66,18 @@ func readLines(reader io.Reader) ([]string, error) {
 	}
 }
 
-func compileAndRun(runPath, src string, javaArgs []string) {
+func compileAndRun(runPath, src string, srcs []string, javaArgs []string) {
+	compile(srcs)
+	changeDirectoryTo(runPath)
+	run(runPath, src, javaArgs)
+}
+
+func compile(srcs []string) {
 	args := []string{"-d", oakBinPath, "-Xlint:unchecked", "-sourcepath", "."}
 	if *eFlag != "" {
 		args = append(args, "-encoding", *eFlag)
 	}
-	args = append(args, src)
+	args = append(args, srcs...)
 	dPrintf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
@@ -73,20 +85,17 @@ func compileAndRun(runPath, src string, javaArgs []string) {
 	if err != nil {
 		exit(err, 1)
 	}
+}
 
-	err = os.Chdir(runPath)
-	if err != nil {
-		exit(err, 1)
-	}
-
-	args = []string{"-classpath", oakBinPath + PLS + "src"}
+func run(runPath, src string, javaArgs []string) {
+	args := []string{"-classpath", oakBinPath + PLS + "src"}
 	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
 	args = append(args, javaArgs...)
 	dPrintf("java %s\n", strings.Join(args, " "))
-	cmd = exec.Command("java", args...)
+	cmd := exec.Command("java", args...)
 	redirect(cmd)
-	err = cmd.Run()
+	err := cmd.Run()
 	if err != nil {
 		exit(err, 1)
 	}
@@ -123,10 +132,7 @@ func changeDirToSrc(pkg string) {
 	dir = dir[:lastIndex]
 	dPrintf("src dir = %q\n", dir)
 
-	err = os.Chdir(dir)
-	if err != nil {
-		exit(err, 1)
-	}
+	changeDirectoryTo(dir)
 
 	if *dFlag {
 		wd, err := os.Getwd()

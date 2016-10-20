@@ -1,5 +1,7 @@
 # oak
-oak is a command line tool for Java. oak is inspired by "go" tool for the Go programming language.
+Oak is a command line tool for Java. Oak is inspired by "go" tool for the Go programming language.
+
+Oak is not a general purpose tool to compile and run any Java projects, but an assitant tool for me to compile solutions of Java exercises for in-house Java training courses.
 
 Currently following commands are supported:
 
@@ -7,6 +9,8 @@ Currently following commands are supported:
 * oak run [Java file] [arguments]
 * oak test [-v]
 * oak version
+
+To use oak, you have to change the currently directory to the directory where Java source files are located and then run oak command.
 
 **help** command shows the help messages.
 

@@ -138,10 +138,9 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 		if err != nil {
 			// no "test" directory, use "src" directory
 			return dir + srcPath, dir, true, pkg
-		} else {
-			f.Close()
-			return testDir + srcPath, testDir, true, pkg
 		}
+		f.Close()
+		return testDir + srcPath, testDir, true, pkg
 	}
 
 	// This is a corner case in which there is no "test" and "src" directory, but

@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"./slices"
+	"slices"
 )
 
 var cmdRun = &Command{

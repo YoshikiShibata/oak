@@ -23,11 +23,11 @@ After installing, then set `OAK_HOME` environment variable to the installed dire
 
 To use oak, you have to change the currently directory to the directory where Java source files are located and then run oak command.
 
-**help** command shows the help messages.
+* **help** command shows the help messages.
 
-**run** command compiles the specified Java file and run its main method. 
+* **run** command compiles the specified Java file and run its main method. 
 
-**test** command compiles all test Java files of which file names end with "Test.java" and run all test methods.
+* **test** command compiles all test Java files of which file names end with "Test.java" and run all test methods.
 -v option shows both names of test class and test method. 
 
-**version** command shows the version of the oak command.
+* **version** command shows the version of the oak command.

@@ -108,7 +108,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 		dPrintf("testSrcDir = %q, testDir = %q, ok = %v\n", testSrcDir, testDir, ok)
 	}()
 
-	pkg := findPackageFromCurrentlyDirectory()
+	pkg := findPackageFromCurrentDirectory()
 	dPrintf("package = %q\n", pkg)
 
 	dir, err := os.Getwd()
@@ -158,6 +158,7 @@ func compileAsTest(srcPath, src string) {
 		args = append(args, "-encoding", *eFlag)
 	}
 	args = append(args, src)
+	dShowCWD()
 	dPrintf("javac %s\n", strings.Join(args, " "))
 
 	cmd := exec.Command("javac", args...)
@@ -181,6 +182,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 
 	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
+	dShowCWD()
 	dPrintf("java %s\n", strings.Join(args, " "))
 
 	cmd := exec.Command("java", args...)

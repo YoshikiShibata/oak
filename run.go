@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"slices"
+	"github.com/YoshikiShibata/oak/slices"
 )
 
 var cmdRun = &Command{

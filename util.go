@@ -3,10 +3,22 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
+
+func dShowCWD() {
+	if *dFlag {
+		wd, err := os.Getwd()
+		if err != nil {
+			exit(err, 1)
+		}
+		dPrintf("CWD = %s\n", wd)
+	}
+}
 
 func exit(err error, exitCode int) {
 	fmt.Printf("%v\n", err)
@@ -45,7 +57,23 @@ func findPackage(javaFile string) string {
 	return ""
 }
 
-func findPackageFromCurrentlyDirectory() string {
+func readLines(reader io.Reader) ([]string, error) {
+	lines := make([]string, 0, 1024)
+	r := bufio.NewReader(reader)
+
+	for {
+		line, err := r.ReadString('\n')
+		if err != nil {
+			if err == io.EOF {
+				return lines, nil
+			}
+			return lines, err
+		}
+		lines = append(lines, line)
+	}
+}
+
+func findPackageFromCurrentDirectory() string {
 	javaFiles := listJavaFiles(".")
 	if len(javaFiles) == 0 {
 		exit(fmt.Errorf(".java files are not found"), 1)

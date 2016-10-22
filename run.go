@@ -3,12 +3,13 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
+
+	"./slices"
 )
 
 var cmdRun = &Command{
@@ -35,51 +36,40 @@ func runRun(cmd *Command, args []string) {
 	recreateBin()
 
 	javaFiles := listNonTestFiles(".")
+	// Sometimes the main method is in a source file of which suffix is "Test.java": if so,
+	// add the args[0] to javaFiles.
+	if !slices.ContainsString(javaFiles, args[0]) {
+		javaFiles = append(javaFiles, args[0])
+	}
 
-	// fmt.Printf("args = %v\n", args)
 	p := findPackage(args[0])
 	if p == "" {
-		compileAndRun(".", args[0], []string{args[0]}, args[1:])
+		compileAndRun(".", args[0], []string{args[0]}, args[1:], ".")
 	} else {
-		// fmt.Printf("Package is %q\n", p)
 		changeDirToSrc(p)
 		pathPrefix := strings.Replace(p, ".", PS, -1) + PS
 		for i := 0; i < len(javaFiles); i++ {
 			javaFiles[i] = pathPrefix + javaFiles[i]
 		}
 
-		compileAndRun("..", pathPrefix+args[0], javaFiles, args[1:])
+		srcPath := ".." + PS + "src" + PLS + ".." + PS + "test"
+		compileAndRun("..", pathPrefix+args[0], javaFiles, args[1:], srcPath)
 	}
 }
 
-func readLines(reader io.Reader) ([]string, error) {
-	lines := make([]string, 0, 1024)
-	r := bufio.NewReader(reader)
-
-	for {
-		line, err := r.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				return lines, nil
-			}
-			return lines, err
-		}
-		lines = append(lines, line)
-	}
-}
-
-func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string) {
-	compile(srcs)
+func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string, srcPath string) {
+	compile(srcs, srcPath)
 	changeDirectoryTo(runPath)
 	run(runPath, mainSrc, javaArgs)
 }
 
-func compile(srcs []string) {
-	args := []string{"-d", oakBinPath, "-Xlint:unchecked", "-sourcepath", "."}
+func compile(srcs []string, srcPath string) {
+	args := []string{"-d", oakBinPath, "-Xlint:unchecked", "-sourcepath", srcPath}
 	if *eFlag != "" {
 		args = append(args, "-encoding", *eFlag)
 	}
 	args = append(args, srcs...)
+	dShowCWD()
 	dPrintf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)
@@ -97,6 +87,7 @@ func run(runPath, mainSrc string, javaArgs []string) {
 
 	args = append(args, mainClass)
 	args = append(args, javaArgs...)
+	dShowCWD()
 	dPrintf("java %s\n", strings.Join(args, " "))
 	cmd := exec.Command("java", args...)
 	redirect(cmd)
@@ -138,12 +129,4 @@ func changeDirToSrc(pkg string) {
 	dPrintf("src dir = %q\n", dir)
 
 	changeDirectoryTo(dir)
-
-	if *dFlag {
-		wd, err := os.Getwd()
-		if err != nil {
-			exit(err, 1)
-		}
-		dPrintf("CWD = %s\n", wd)
-	}
 }

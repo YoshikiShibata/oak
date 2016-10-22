@@ -12,6 +12,8 @@ Currently following commands are supported:
 
 ##  **How To Install:**
 
+To install oak, you need [the **go** command](https://golang.org/). 
+
 You have to install oak with the following command:
 `go get github.com/YoshikiShibata/oak`. 
 

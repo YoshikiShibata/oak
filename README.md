@@ -10,6 +10,11 @@ Currently following commands are supported:
 * oak test [-v]
 * oak version
 
+**How To Install**
+`
+go get github.com/YoshikiShibata/oak
+`
+
 To use oak, you have to change the currently directory to the directory where Java source files are located and then run oak command.
 
 **help** command shows the help messages.

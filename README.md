@@ -10,7 +10,7 @@ Currently following commands are supported:
 * oak test [-v]
 * oak version
 
-**How To Install: **
+#  **How To Install:**
 
 You have to install oak with the following command:
 `
@@ -18,6 +18,8 @@ go get github.com/YoshikiShibata/oak
 `
 
 After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
+
+# **Commands**
 
 To use oak, you have to change the currently directory to the directory where Java source files are located and then run oak command.
 

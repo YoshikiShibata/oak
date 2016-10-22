@@ -202,6 +202,7 @@ func junitClassPath() string {
 	junitPath := oakHome + "/tools/junit"
 	d, err := os.Open(junitPath)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "OAK_HOME=%s seems incorrect\n", oakHome)
 		exit(err, 1)
 	}
 

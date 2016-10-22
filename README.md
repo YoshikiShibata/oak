@@ -10,7 +10,7 @@ Currently following commands are supported:
 * oak test [-v]
 * oak version
 
-#  **How To Install:**
+##  **How To Install:**
 
 You have to install oak with the following command:
 `
@@ -19,7 +19,7 @@ go get github.com/YoshikiShibata/oak
 
 After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
 
-# **Commands**
+## **Commands**
 
 To use oak, you have to change the currently directory to the directory where Java source files are located and then run oak command.
 
@@ -28,6 +28,6 @@ To use oak, you have to change the currently directory to the directory where Ja
 **run** command compiles the specified Java file and run its main method. 
 
 **test** command compiles all test Java files of which file names end with "Test.java" and run all test methods.
--v option shows both names of test class and test method. To use the test command, you must set JUNIT_HOME environment variable which points to a directory where hamcrest-core-*x.x*.jar and junit-*x.xx*.jar files are found.
+-v option shows both names of test class and test method. 
 
 **version** command shows the version of the oak command.

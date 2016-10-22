@@ -12,17 +12,17 @@ Currently following commands are supported:
 
 ##  **How To Install:**
 
-To install oak, you need [the **go** command](https://golang.org/). 
+To install oak, you need [**go** command](https://golang.org/). 
 
-You have to install oak with the following command:
+1. You have to install oak with the following command:
 `go get github.com/YoshikiShibata/oak`. 
 
-If you want to update the oak to the latest version:
+2. If you want to update the oak to the latest version:
 `go get -u github.com/YoshikiShibata/oak`.
 
-**oak** command will be build as `$GOPATH/bin/oak`.
+3. **oak** command will be build as `$GOPATH/bin/oak`.
 
-After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
+4. After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
 
 ## **Commands**
 

@@ -192,10 +192,12 @@ func compileAndRunTest(runPath, srcPath, src string) {
 }
 
 func junitClassPath() string {
-	junitPath := os.Getenv("JUNIT_HOME")
-	if junitPath == "" {
-		exit(fmt.Errorf("JUNIT_HOME is not set"), 1)
+	oakHome := os.Getenv("OAK_HOME")
+	if oakHome == "" {
+		exit(fmt.Errorf("OAK_HOME is not set"), 1)
 	}
+
+	junitPath := oakHome + "/tools/junit"
 	d, err := os.Open(junitPath)
 	if err != nil {
 		exit(err, 1)

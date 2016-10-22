@@ -36,3 +36,7 @@ To use oak, you have to change the currently directory to the directory where Ja
 -v option shows both names of test class and test method. 
 
 * **version** command shows the version of the oak command.
+
+## **Notes**
+
+* If source files and test files are located separately, then they must be located under `src` and `test` directories respectively.  

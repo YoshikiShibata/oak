@@ -76,8 +76,8 @@ func containsMainMethod(javaFile string) bool {
 	}
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "public static void main(String[] args)") ||
-			strings.HasPrefix(line, "static public void main(String[] args)") {
+		if strings.HasPrefix(line, "public static void main(String") ||
+			strings.HasPrefix(line, "static public void main(String") {
 			return true
 		}
 	}

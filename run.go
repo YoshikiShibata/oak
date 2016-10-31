@@ -24,8 +24,11 @@ func init() {
 
 func runRun(cmd *Command, args []string) {
 	if len(args) == 0 {
-		fmt.Printf("No Java file specified\n")
-		os.Exit(1)
+		args = findMainSourceFiles()
+		if len(args) == 0 {
+			fmt.Printf("No main Java file found \n")
+			os.Exit(1)
+		}
 	}
 
 	if !strings.HasSuffix(args[0], ".java") {
@@ -55,6 +58,30 @@ func runRun(cmd *Command, args []string) {
 		srcPath := ".." + PS + "src" + PLS + ".." + PS + "test"
 		compileAndRun("..", pathPrefix+args[0], javaFiles, args[1:], srcPath)
 	}
+}
+
+func findMainSourceFiles() []string {
+	for _, javaFile := range listJavaFiles(".") {
+		if containsMainMethod(javaFile) {
+			return []string{javaFile}
+		}
+	}
+	return nil
+}
+
+func containsMainMethod(javaFile string) bool {
+	lines, err := readLinesFromFile(javaFile)
+	if err != nil {
+		exit(err, 1)
+	}
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "public static void main(String[] args)") ||
+			strings.HasPrefix(line, "static public void main(String[] args)") {
+			return true
+		}
+	}
+	return false
 }
 
 func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string, srcPath string) {

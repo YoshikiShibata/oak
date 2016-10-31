@@ -37,12 +37,7 @@ func changeDirectoryTo(path string) {
 }
 
 func findPackage(javaFile string) string {
-	file, err := os.Open(javaFile)
-	if err != nil {
-		exit(err, 1)
-	}
-	defer file.Close()
-	lines, err := readLines(file)
+	lines, err := readLinesFromFile(javaFile)
 	if err != nil {
 		exit(err, 1)
 	}
@@ -55,6 +50,15 @@ func findPackage(javaFile string) string {
 		}
 	}
 	return ""
+}
+
+func readLinesFromFile(file string) ([]string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return readLines(f)
 }
 
 func readLines(reader io.Reader) ([]string, error) {

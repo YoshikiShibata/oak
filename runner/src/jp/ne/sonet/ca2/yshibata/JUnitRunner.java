@@ -53,6 +53,9 @@ public class JUnitRunner {
         JUnitCore core = new JUnitCore();
         core.addListener(new TestListener(System.out));
         Result result = core.run(classes.toArray(new Class<?>[0]));
+        if (result.getFailureCount() != 0) {
+            System.exit(1);
+        }
     }
 
     private static void showUsage() {

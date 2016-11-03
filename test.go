@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 var cmdTest = &Command{
@@ -187,9 +188,30 @@ func compileAndRunTest(runPath, srcPath, src string) {
 
 	cmd := exec.Command("java", args...)
 	redirect(cmd)
+
+	// After one minute, any unfinished tests will be aborted.
+	ticker := time.NewTicker(time.Minute)
+	timeouted := false
+	cancel := make(chan struct{})
+	go func() {
+		select {
+		case <-ticker.C:
+			cmd.Process.Kill()
+			timeouted = true
+		case <-cancel:
+		}
+	}()
+
 	err := cmd.Run()
+	ticker.Stop()
+	close(cancel)
+
 	if err != nil {
-		exit(err, 1)
+		if timeouted {
+			exit(fmt.Errorf("ONE MINUTE TIMEOUT! ABORTED(%v)", err), 2)
+		} else {
+			exit(err, 1)
+		}
 	}
 }
 

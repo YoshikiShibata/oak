@@ -34,6 +34,7 @@ To use oak, you have to change the currently directory to the directory where Ja
 
 * **test** command compiles all test Java files of which file names end with "Test.java" and run all test methods.
 -v option shows both names of test class and test method. 
+If tests will not be completed within one minute, then they will be aborted.
 
 * **version** command shows the version of the oak command.
 

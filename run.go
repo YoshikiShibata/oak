@@ -26,14 +26,12 @@ func runRun(cmd *Command, args []string) {
 	if len(args) == 0 {
 		args = findMainSourceFiles()
 		if len(args) == 0 {
-			fmt.Printf("No main Java file found \n")
-			os.Exit(1)
+			exit(fmt.Errorf("No main Java file found"), codeNoMainMethod)
 		}
 	}
 
 	if !strings.HasSuffix(args[0], ".java") {
-		fmt.Printf("%s should have .java suffix\n", args[0])
-		os.Exit(1)
+		exit(fmt.Errorf("%s should have .java suffix\n", args[0]), codeNoMainMethod)
 	}
 
 	recreateBin()
@@ -120,7 +118,7 @@ func run(runPath, mainSrc string, javaArgs []string) {
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
-		exit(err, codeError)
+		exit(err, codeMainFailed)
 	}
 }
 

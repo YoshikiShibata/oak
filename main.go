@@ -15,6 +15,8 @@ const (
 	codeCompileError     = 2 // compile error
 	codeExecutionTimeout = 3 // execution timeout
 	codeTestsFailed      = 4 // test failed
+	codeNoMainMethod     = 5 // no main method
+	codeMainFailed       = 6 // executing main failed
 )
 
 // A Command is an implementation of a jgo command like go run or go test

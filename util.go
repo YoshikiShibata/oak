@@ -23,7 +23,7 @@ func dShowCWD() {
 func exit(err error, exitCode int) {
 	fmt.Printf("%v\n", err)
 	if *dFlag {
-		panic("")
+		panic("Debug Mode")
 	} else {
 		os.Exit(exitCode)
 	}

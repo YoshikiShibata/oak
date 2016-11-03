@@ -72,7 +72,7 @@ func findMainSourceFiles() []string {
 func containsMainMethod(javaFile string) bool {
 	lines, err := readLinesFromFile(javaFile)
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -102,7 +102,7 @@ func compile(srcs []string, srcPath string) {
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeCompileError)
 	}
 }
 
@@ -120,18 +120,18 @@ func run(runPath, mainSrc string, javaArgs []string) {
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 }
 
 func redirect(cmd *exec.Cmd) {
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 	go func() {
 		io.Copy(os.Stderr, stderr)
@@ -144,13 +144,13 @@ func redirect(cmd *exec.Cmd) {
 func changeDirToSrc(pkg string) {
 	dir, err := os.Getwd()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	srcPath := PS + strings.Replace(pkg, ".", PS, -1)
 	lastIndex := strings.LastIndex(dir, srcPath)
 	if lastIndex < 0 {
-		exit(fmt.Errorf("directory(%q) doesn't match with the package(%q)", dir, pkg), 1)
+		exit(fmt.Errorf("directory(%q) doesn't match with the package(%q)", dir, pkg), codeError)
 	}
 	dir = dir[:lastIndex]
 	dPrintf("src dir = %q\n", dir)

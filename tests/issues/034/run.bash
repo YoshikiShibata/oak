@@ -9,7 +9,8 @@ echo "testing from $PWD"
 echo "invoking date = " `date`
 $OAK_HOME/bin/oak test
 
-if [ $? != 2 ]
+# 3 is Timeout
+if [ $? != 3 ]
 then
     exit 1
 fi

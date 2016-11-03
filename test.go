@@ -36,7 +36,7 @@ func generateAndCompileJUnitRunner() {
 	// same the current directory
 	cwd, err := os.Getwd()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	changeDirectoryTo(oakSrcPath)
@@ -54,13 +54,13 @@ func generateJUnitRunnerSource() string {
 		strings.Join(paths[:len(paths)-1], PS)
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	javaFile := dir + PS + paths[len(paths)-1] + ".java"
 	f, err := os.Create(javaFile)
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	f.WriteString(runnerJavaSrc)
@@ -71,7 +71,7 @@ func generateJUnitRunnerSource() string {
 func findTestsAndRunThem() {
 	testSrcDir, testDir, ok, pkgName := findTestSourceDirectory()
 	if !ok {
-		exit(fmt.Errorf("No test files are found"), 1)
+		exit(fmt.Errorf("No test files are found"), codeError)
 	}
 
 	runPath := "."
@@ -84,7 +84,7 @@ func findTestsAndRunThem() {
 
 	testFiles := listTestFiles(testSrcDir)
 	if len(testFiles) == 0 {
-		exit(fmt.Errorf("No test files are found"), 1)
+		exit(fmt.Errorf("No test files are found"), codeError)
 	}
 
 	pkgDir := ""
@@ -114,7 +114,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 
 	dir, err := os.Getwd()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	srcPath := ""
@@ -123,7 +123,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 		srcPath = PS + strings.Replace(pkg, ".", PS, -1)
 		lastIndex := strings.LastIndex(dir, srcPath)
 		if lastIndex < 0 {
-			exit(fmt.Errorf("directory(%q) doesn't match with the package(%q)", dir, pkg), 1)
+			exit(fmt.Errorf("directory(%q) doesn't match with the package(%q)", dir, pkg), codeError)
 		}
 		dir = dir[:lastIndex]
 		dPrintf("New dir = %q\n", dir)
@@ -166,7 +166,7 @@ func compileAsTest(srcPath, src string) {
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeCompileError)
 	}
 }
 
@@ -208,9 +208,9 @@ func compileAndRunTest(runPath, srcPath, src string) {
 
 	if err != nil {
 		if timeouted {
-			exit(fmt.Errorf("ONE MINUTE TIMEOUT! ABORTED(%v)", err), 2)
+			exit(fmt.Errorf("ONE MINUTE TIMEOUT! ABORTED(%v)", err), codeExecutionTimeout)
 		} else {
-			exit(err, 1)
+			exit(err, codeError)
 		}
 	}
 }
@@ -218,25 +218,25 @@ func compileAndRunTest(runPath, srcPath, src string) {
 func junitClassPath() string {
 	oakHome := os.Getenv("OAK_HOME")
 	if oakHome == "" {
-		exit(fmt.Errorf("OAK_HOME is not set"), 1)
+		exit(fmt.Errorf("OAK_HOME is not set"), codeError)
 	}
 
 	junitPath := oakHome + "/tools/junit"
 	d, err := os.Open(junitPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "OAK_HOME=%s seems incorrect\n", oakHome)
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	defer d.Close()
 
 	files, err := d.Readdir(0)
 	if err != nil {
-		exit(err, 1)
+		exit(err, codeError)
 	}
 
 	if len(files) == 0 {
-		exit(fmt.Errorf("Jar files of JUNIT are not found"), 1)
+		exit(fmt.Errorf("Jar files of JUNIT are not found"), codeError)
 	}
 
 	jarFiles := make([]string, 0, len(files))
@@ -251,7 +251,7 @@ func junitClassPath() string {
 		}
 	}
 	if len(jarFiles) != 2 {
-		exit(fmt.Errorf("Jar files of JUNIT are not found"), 1)
+		exit(fmt.Errorf("Jar files of JUNIT are not found"), codeError)
 	}
 	return junitPath + PS + jarFiles[0] + PLS +
 		junitPath + PS + jarFiles[1]

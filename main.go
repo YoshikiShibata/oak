@@ -9,6 +9,13 @@ import (
 	"strings"
 )
 
+// Exit code
+const (
+	codeError            = 1 // general error
+	codeCompileError     = 2 // compile error
+	codeExecutionTimeout = 3 // execution timeout
+)
+
 // A Command is an implementation of a jgo command like go run or go test
 type Command struct {
 	// Run runs the command.

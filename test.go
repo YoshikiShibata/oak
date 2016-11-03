@@ -71,7 +71,7 @@ func generateJUnitRunnerSource() string {
 func findTestsAndRunThem() {
 	testSrcDir, testDir, ok, pkgName := findTestSourceDirectory()
 	if !ok {
-		exit(fmt.Errorf("No test files are found"), codeError)
+		exit(fmt.Errorf("No test files are found"), codeTestsFailed)
 	}
 
 	runPath := "."
@@ -84,7 +84,7 @@ func findTestsAndRunThem() {
 
 	testFiles := listTestFiles(testSrcDir)
 	if len(testFiles) == 0 {
-		exit(fmt.Errorf("No test files are found"), codeError)
+		exit(fmt.Errorf("No test files are found"), codeTestsFailed)
 	}
 
 	pkgDir := ""
@@ -210,7 +210,7 @@ func compileAndRunTest(runPath, srcPath, src string) {
 		if timeouted {
 			exit(fmt.Errorf("ONE MINUTE TIMEOUT! ABORTED(%v)", err), codeExecutionTimeout)
 		} else {
-			exit(err, codeError)
+			exit(err, codeTestsFailed)
 		}
 	}
 }

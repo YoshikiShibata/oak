@@ -53,7 +53,7 @@ func runRun(cmd *Command, args []string) {
 			javaFiles[i] = pathPrefix + javaFiles[i]
 		}
 
-		srcPath := ".." + PS + "src" + PLS + ".." + PS + "test"
+		srcPath := ".." + PS + "src" + PLS + ".." + PS + "test" + PS + "."
 		compileAndRun("..", pathPrefix+args[0], javaFiles, args[1:], srcPath)
 	}
 }

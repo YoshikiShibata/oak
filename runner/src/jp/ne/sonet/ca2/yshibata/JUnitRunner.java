@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
@@ -52,7 +53,8 @@ public class JUnitRunner {
 
         JUnitCore core = new JUnitCore();
         core.addListener(new TestListener(System.out));
-        Result result = core.run(classes.toArray(new Class<?>[0]));
+        Request req = Request.classes(classes.toArray(new Class<?>[0]));
+        Result result = core.run(req);
         if (result.getFailureCount() != 0) {
             System.exit(1);
         }

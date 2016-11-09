@@ -23,7 +23,7 @@ func init() {
 func testRun(cmd *Command, args []string) {
 	recreateBin()
 	generateAndCompileJUnitRunner()
-	findTestsAndRunThem()
+	findTestsAndRunThem(args)
 }
 
 var junitPath = junitClassPath()
@@ -68,7 +68,7 @@ func generateJUnitRunnerSource() string {
 	return strings.Join(paths, PS) + ".java"
 }
 
-func findTestsAndRunThem() {
+func findTestsAndRunThem(args []string) {
 	testSrcDir, testDir, ok, pkgName := findTestSourceDirectory()
 	if !ok {
 		exit(fmt.Errorf("No test files are found"), codeTestsFailed)
@@ -97,7 +97,7 @@ func findTestsAndRunThem() {
 		// So make sure to be the right directory every time.
 		changeDirectoryTo(testDir)
 
-		compileAndRunTest(runPath, srcPath, pkgDir+file)
+		compileAndRunTest(runPath, srcPath, pkgDir+file, args)
 	}
 }
 
@@ -170,7 +170,7 @@ func compileAsTest(srcPath, src string) {
 	}
 }
 
-func compileAndRunTest(runPath, srcPath, src string) {
+func compileAndRunTest(runPath, srcPath, src string, options []string) {
 	compileAsTest(srcPath, src)
 
 	changeDirectoryTo(runPath)
@@ -179,6 +179,13 @@ func compileAndRunTest(runPath, srcPath, src string) {
 	args = append(args, runner)
 	if *vFlag {
 		args = append(args, "-v")
+	}
+
+	// Options will be passed to the Runner
+	for _, option := range options {
+		if strings.HasPrefix(option, "-run=") {
+			args = append(args, option)
+		}
 	}
 
 	src = strings.Replace(src, PS, ".", -1)

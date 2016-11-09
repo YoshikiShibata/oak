@@ -16,10 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
+import org.junit.runner.manipulation.Filter;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
@@ -31,6 +34,8 @@ import org.junit.runner.notification.RunListener;
 public class JUnitRunner {
 
     private static boolean verbose = false;
+    private static String methodPattern = ".";
+    private static Pattern pattern;
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -41,8 +46,17 @@ public class JUnitRunner {
             if (args[i].equals("-v")) {
                 verbose = true;
                 args[i] = null;
+                continue;
+            }
+
+            if (args[i].startsWith("-run=", 0)) {
+                methodPattern = args[i].split("=")[1];
+                args[i] = null;
+                continue;
             }
         }
+
+        pattern = Pattern.compile(methodPattern);
 
         List<Class<?>> classes = new ArrayList<>();
         for (String testClassName : args) {
@@ -61,6 +75,26 @@ public class JUnitRunner {
         JUnitCore core = new JUnitCore();
         core.addListener(new TestListener(System.out));
         Request req = Request.classes(classes.toArray(new Class<?>[0]));
+        req = req.filterWith(new Filter() {
+            @Override
+            public boolean shouldRun(Description description) {
+
+                String methodName = description.getMethodName();
+                if (methodName == null) {
+                    return true;
+                }
+
+                Matcher matcher = pattern.matcher(methodName);
+                return matcher.find();
+            }
+
+            @Override
+            public String describe() {
+                return "oak JUnit method filter";
+            }
+
+        });
+        
         Result result = core.run(req);
         if (result.getFailureCount() != 0) {
             System.exit(1);
@@ -68,7 +102,7 @@ public class JUnitRunner {
     }
 
     private static void showUsage() {
-        System.err.println("Usage: JUnitRunner [Test Class Names]");
+        System.err.println("Usage: JUnitRunner [-v] [-run=XXXX] [Test Class Names] ");
         System.exit(1);
     }
 

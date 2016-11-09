@@ -12,3 +12,10 @@ if [ $? != 0 ]
 then
     exit 1
 fi
+
+$OAK_HOME/bin/oak test -v -run=illegal
+
+if [ $? != 0 ]
+then
+    exit 1
+fi

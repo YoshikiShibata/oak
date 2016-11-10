@@ -19,7 +19,7 @@ const (
 	codeMainFailed       = 6 // executing main failed
 )
 
-// A Command is an implementation of a jgo command like go run or go test
+// A Command is an implementation of the oak command like go run or go test
 type Command struct {
 	// Run runs the command.
 	// The args are the argument after the command name.
@@ -29,10 +29,10 @@ type Command struct {
 	// The first word in the line is taken to be the command name.
 	UsageLine string
 
-	// Short is the short description shown in the 'jgo help' output.
+	// Short is the short description shown in the 'oak help' output.
 	Short string
 
-	// Long is the long message shown in the `jgo help <this-command>` output.
+	// Long is the long message shown in the `oak help <this-command>` output.
 	Long string
 
 	// Flag is a set of flags specific to this command.
@@ -66,7 +66,7 @@ func (c *Command) Runnable() bool {
 }
 
 // Commands lists the available commands and help topics.
-// The order here is the order in which they are printed by `jgo help`.
+// The order here is the order in which they are printed by `oak help`.
 var commands = []*Command{
 	cmdRun,
 	cmdTest,

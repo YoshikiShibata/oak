@@ -4,9 +4,7 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/YoshikiShibata/oak/slices"
@@ -98,14 +96,7 @@ func compile(srcs []string, srcPath string) {
 		args = append(args, "-encoding", *eFlag)
 	}
 	args = append(args, srcs...)
-	dShowCWD()
-	dPrintf("javac %s\n", strings.Join(args, " "))
-	cmd := exec.Command("javac", args...)
-	redirect(cmd)
-	err := cmd.Run()
-	if err != nil {
-		exit(err, codeCompileError)
-	}
+	javac(args)
 }
 
 func run(runPath, mainSrc string, javaArgs []string) {
@@ -116,31 +107,7 @@ func run(runPath, mainSrc string, javaArgs []string) {
 
 	args = append(args, mainClass)
 	args = append(args, javaArgs...)
-	dShowCWD()
-	dPrintf("java %s\n", strings.Join(args, " "))
-	cmd := exec.Command("java", args...)
-	redirect(cmd)
-	err := cmd.Run()
-	if err != nil {
-		exit(err, codeMainFailed)
-	}
-}
-
-func redirect(cmd *exec.Cmd) {
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		exit(err, codeError)
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		exit(err, codeError)
-	}
-	go func() {
-		io.Copy(os.Stderr, stderr)
-	}()
-	go func() {
-		io.Copy(os.Stdout, stdout)
-	}()
+	java(args)
 }
 
 func changeDirToSrc(pkg string) {

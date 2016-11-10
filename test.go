@@ -5,9 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
-	"time"
 )
 
 var cmdTest = &Command{
@@ -159,15 +157,7 @@ func compileAsTest(srcPath, src string) {
 		args = append(args, "-encoding", *eFlag)
 	}
 	args = append(args, src)
-	dShowCWD()
-	dPrintf("javac %s\n", strings.Join(args, " "))
-
-	cmd := exec.Command("javac", args...)
-	redirect(cmd)
-	err := cmd.Run()
-	if err != nil {
-		exit(err, codeCompileError)
-	}
+	javac(args)
 }
 
 func compileAndRunTest(runPath, srcPath, src string, options []string) {
@@ -190,36 +180,8 @@ func compileAndRunTest(runPath, srcPath, src string, options []string) {
 
 	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
-	dShowCWD()
-	dPrintf("java %s\n", strings.Join(args, " "))
 
-	cmd := exec.Command("java", args...)
-	redirect(cmd)
-
-	// After one minute, any unfinished tests will be aborted.
-	ticker := time.NewTicker(time.Minute)
-	timeouted := false
-	cancel := make(chan struct{})
-	go func() {
-		select {
-		case <-ticker.C:
-			cmd.Process.Kill()
-			timeouted = true
-		case <-cancel:
-		}
-	}()
-
-	err := cmd.Run()
-	ticker.Stop()
-	close(cancel)
-
-	if err != nil {
-		if timeouted {
-			exit(fmt.Errorf("ONE MINUTE TIMEOUT! ABORTED(%v)", err), codeExecutionTimeout)
-		} else {
-			exit(err, codeTestsFailed)
-		}
-	}
+	javaOneMinuteTimeout(args)
 }
 
 func junitClassPath() string {

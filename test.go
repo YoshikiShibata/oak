@@ -181,7 +181,7 @@ func compileAndRunTest(runPath, srcPath, src string, options []string) {
 	src = strings.Replace(src, PS, ".", -1)
 	args = append(args, src[:len(src)-5])
 
-	javaOneMinuteTimeout(args)
+	javaOneMinuteTimeout(args, codeTestsFailed)
 }
 
 func junitClassPath() string {

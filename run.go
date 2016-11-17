@@ -20,11 +20,13 @@ var cmdRun = &Command{
 
 var runFlag = flag.NewFlagSet("run flag", flag.ContinueOnError)
 var runTOptionValue *int
+var runKOptionValue *int
 
 func init() {
 	cmdRun.Run = runRun
 
 	runTOptionValue = runFlag.Int("t", -1, "timeout")
+	runKOptionValue = runFlag.Int("k", -1, "kill")
 }
 
 func runRun(cmd *Command, args []string) {
@@ -122,11 +124,16 @@ func run(runPath, mainSrc string, javaArgs []string) {
 	args = append(args, mainClass)
 	args = append(args, javaArgs...)
 
-	if *runTOptionValue <= 0 {
-		java(args)
+	if *runTOptionValue > 0 {
+		javaTimeout(args, time.Second*time.Duration(*runTOptionValue),
+			codeMainFailed, codeExecutionTimeout)
+	} else if *runKOptionValue > 0 {
+		javaTimeout(args, time.Second*time.Duration(*runKOptionValue),
+			codeMainFailed, 0) // 0 is normal
 	} else {
-		javaTimeout(args, time.Second*time.Duration(*runTOptionValue))
+		java(args)
 	}
+
 }
 
 func changeDirToSrc(pkg string) {

@@ -5,14 +5,14 @@
 TOP_DIR=$PWD
 
 echo "testing from $PWD"
-$OAK_HOME/bin/oak run -t 5
+$OAK_HOME/bin/oak run -t 2
 
 if [ $? != 3 ]
 then
     exit 1
 fi
 
-$OAK_HOME/bin/oak run -t=5
+$OAK_HOME/bin/oak run -t=2
 
 if [ $? != 3 ]
 then

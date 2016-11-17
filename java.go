@@ -33,11 +33,11 @@ func java(args []string) {
 	}
 }
 
-func javaOneMinuteTimeout(args []string) {
-	javaTimeout(args, time.Minute)
+func javaOneMinuteTimeout(args []string, failExitCode int) {
+	javaTimeout(args, time.Minute, failExitCode, codeExecutionTimeout)
 }
 
-func javaTimeout(args []string, timeout time.Duration) {
+func javaTimeout(args []string, timeout time.Duration, failExitCode, timeoutExitCode int) {
 	dShowCWD()
 	dPrintf("java %s\n", strings.Join(args, " "))
 
@@ -64,9 +64,9 @@ func javaTimeout(args []string, timeout time.Duration) {
 	if err != nil {
 		if timeouted {
 			exit(fmt.Errorf("\n\n%d SECONDS TIMEOUT! ABORTED(%v)",
-				timeout/time.Second, err), codeExecutionTimeout)
+				timeout/time.Second, err), timeoutExitCode)
 		} else {
-			exit(err, codeTestsFailed)
+			exit(err, failExitCode)
 		}
 	}
 }

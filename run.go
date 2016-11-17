@@ -3,9 +3,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/YoshikiShibata/oak/slices"
 )
@@ -16,11 +18,23 @@ var cmdRun = &Command{
 	Long:      `Run compiles and runs the class which has main method.`,
 }
 
+var runFlag = flag.NewFlagSet("run flag", flag.ContinueOnError)
+var runTOptionValue *int
+
 func init() {
 	cmdRun.Run = runRun
+
+	runTOptionValue = runFlag.Int("t", -1, "timeout")
 }
 
 func runRun(cmd *Command, args []string) {
+	err := runFlag.Parse(args)
+	if err != nil {
+		exit(err, codeError)
+	}
+	args = runFlag.Args()
+
+	dPrintf("-t=%d\n", *runTOptionValue)
 	if len(args) == 0 {
 		args = findMainSourceFiles()
 		if len(args) == 0 {
@@ -107,7 +121,12 @@ func run(runPath, mainSrc string, javaArgs []string) {
 
 	args = append(args, mainClass)
 	args = append(args, javaArgs...)
-	java(args)
+
+	if *runTOptionValue <= 0 {
+		java(args)
+	} else {
+		javaTimeout(args, time.Second*time.Duration(*runTOptionValue))
+	}
 }
 
 func changeDirToSrc(pkg string) {

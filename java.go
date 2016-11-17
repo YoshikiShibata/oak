@@ -34,6 +34,10 @@ func java(args []string) {
 }
 
 func javaOneMinuteTimeout(args []string) {
+	javaTimeout(args, time.Minute)
+}
+
+func javaTimeout(args []string, timeout time.Duration) {
 	dShowCWD()
 	dPrintf("java %s\n", strings.Join(args, " "))
 
@@ -41,7 +45,7 @@ func javaOneMinuteTimeout(args []string) {
 	redirect(cmd)
 
 	// After one minute, any unfinished tests will be aborted.
-	ticker := time.NewTicker(time.Minute)
+	ticker := time.NewTicker(timeout)
 	timeouted := false
 	cancel := make(chan struct{})
 	go func() {
@@ -59,7 +63,8 @@ func javaOneMinuteTimeout(args []string) {
 
 	if err != nil {
 		if timeouted {
-			exit(fmt.Errorf("ONE MINUTE TIMEOUT! ABORTED(%v)", err), codeExecutionTimeout)
+			exit(fmt.Errorf("\n\n%d SECONDS TIMEOUT! ABORTED(%v)",
+				timeout/time.Second, err), codeExecutionTimeout)
 		} else {
 			exit(err, codeTestsFailed)
 		}

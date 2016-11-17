@@ -148,7 +148,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 }
 
 func compileAsTest(srcPath, src string) {
-	args := []string{"-d", oakBinPath, "-Xlint:unchecked"}
+	args := []string{"-d", oakBinPath}
 	args = append(args, []string{"-classpath", "." + PLS + junitPath}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)

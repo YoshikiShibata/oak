@@ -13,6 +13,8 @@ import (
 
 func javac(args []string) {
 	dShowCWD()
+	lintOptions := []string{"-Xlint:unchecked", "-Xlint:deprecation"}
+	args = append(lintOptions, args...)
 	dPrintf("javac %s\n", strings.Join(args, " "))
 	cmd := exec.Command("javac", args...)
 	redirect(cmd)

@@ -107,7 +107,7 @@ func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string, sr
 }
 
 func compile(srcs []string, srcPath string) {
-	args := []string{"-d", oakBinPath, "-Xlint:unchecked", "-sourcepath", srcPath}
+	args := []string{"-d", oakBinPath, "-sourcepath", srcPath}
 	if *eFlag != "" {
 		args = append(args, "-encoding", *eFlag)
 	}

@@ -92,8 +92,8 @@ func containsMainMethod(javaFile string) bool {
 	}
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "public static void main(String") ||
-			strings.HasPrefix(line, "static public void main(String") {
+		if strings.HasPrefix(line, "public static void main(") ||
+			strings.HasPrefix(line, "static public void main(") {
 			return true
 		}
 	}

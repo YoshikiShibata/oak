@@ -215,7 +215,7 @@ func junitClassPath() string {
 			continue
 		}
 		if strings.HasPrefix(name, "junit-") ||
-			strings.HasPrefix(name, "hamcrest-core-") {
+			strings.HasPrefix(name, "java-hamcrest-") {
 			jarFiles = append(jarFiles, name)
 		}
 	}

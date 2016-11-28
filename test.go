@@ -31,7 +31,7 @@ var junitPath = junitClassPath()
 func generateAndCompileJUnitRunner() {
 	src := generateJUnitRunnerSource()
 
-	// same the current directory
+	// save the current directory
 	cwd, err := os.Getwd()
 	if err != nil {
 		exit(err, codeError)
@@ -72,6 +72,8 @@ func findTestsAndRunThem(args []string) {
 		exit(fmt.Errorf("No test files are found"), codeTestsFailed)
 	}
 
+	compileAllJavaFilesUnderSrc(testSrcDir, testDir, pkgName)
+
 	runPath := "."
 	srcPath := ""
 
@@ -85,10 +87,7 @@ func findTestsAndRunThem(args []string) {
 		exit(fmt.Errorf("No test files are found"), codeTestsFailed)
 	}
 
-	pkgDir := ""
-	if pkgName != "" {
-		pkgDir = strings.Replace(pkgName, ".", PS, -1) + PS
-	}
+	pkgDir := toPackageDirectory(pkgName)
 
 	for _, file := range testFiles {
 		// copmileAndRunTest() will change the current directory.
@@ -97,6 +96,67 @@ func findTestsAndRunThem(args []string) {
 
 		compileAndRunTest(runPath, srcPath, pkgDir+file, args)
 	}
+}
+
+func toPackageDirectory(pkgName string) string {
+	if pkgName == "" {
+		return pkgName
+	}
+	return strings.Replace(pkgName, ".", PS, -1) + PS
+}
+
+// compileAllJavaFilesUnderSrc compiles all Java source files for the
+// specified package under "src" directory.
+func compileAllJavaFilesUnderSrc(testSrcDir, testDir, pkgName string) {
+	// tentative fix for simpleTest1
+	if pkgName == "" {
+		return
+	}
+
+	srcSrcDir := replaceToSrc(testSrcDir)
+	srcDir := replaceToSrc(testDir)
+
+	// If there is no corresponding src directory, do nothing
+	d, err := os.Open(srcSrcDir)
+	if err != nil {
+		return
+	}
+	d.Close()
+
+	javaFiles := listJavaFiles(srcSrcDir)
+
+	// save the current directory
+	cwd, err := os.Getwd()
+	if err != nil {
+		exit(err, codeError)
+	}
+
+	pkgDir := toPackageDirectory(pkgName)
+
+	files := []string{}
+	for _, file := range javaFiles {
+		files = append(files, pkgDir+file)
+	}
+
+	changeDirectoryTo(srcDir)
+
+	srcPath := ".." + PS + "src" + PLS + ".." + PS + "test" + PLS + "."
+	compile(files, srcPath)
+
+	changeDirectoryTo(cwd)
+}
+
+func replaceToSrc(testPath string) string {
+	lastIndex := strings.LastIndex(testPath, PS+"test"+PS)
+	if lastIndex >= 0 {
+		return testPath[:lastIndex] + PS + "src" + PS + testPath[lastIndex+len(PS+"test"+PS):]
+	}
+	lastIndex = strings.LastIndex(testPath, PS+"test")
+	if lastIndex >= 0 {
+		return testPath[:lastIndex] + PS + "src"
+	}
+	return testPath
+
 }
 
 // findTestSourceDirectory determines the two directories for test:
@@ -149,7 +209,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 
 func compileAsTest(srcPath, src string) {
 	args := []string{"-d", oakBinPath}
-	args = append(args, []string{"-classpath", "." + PLS + junitPath}...)
+	args = append(args, []string{"-classpath", "." + PLS + junitPath + PLS + oakBinPath}...)
 	if srcPath != "" {
 		args = append(args, "-sourcepath", srcPath)
 	}

@@ -45,38 +45,48 @@ func generateAndCompileJUnitRunner() {
 // then returns its file path which is relative to oakSrcPath
 func generateJUnitRunnerSource() string {
 	paths := strings.Split(runner, ".")
-	dir := oakSrcPath + PS +
-		strings.Join(paths[:len(paths)-1], PS)
+
+	// compute the directory name where the source file of JUnitRunner should be stored.
+	dir := oakSrcPath + PS + strings.Join(paths[:len(paths)-1], PS)
+
+	// create the directory.
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		exit(err, codeError)
 	}
 
+	// compute the source file name of JUnitRunner
 	javaFile := dir + PS + paths[len(paths)-1] + ".java"
+
+	// create the source file of JUnitRunner
 	f, err := os.Create(javaFile)
 	if err != nil {
 		exit(err, codeError)
 	}
-
 	f.WriteString(runnerJavaSrc)
 	f.Close()
+
 	return strings.Join(paths, PS) + ".java"
 }
 
 func findTestsAndRunThem(args []string) {
-	testSrcDir, testDir, ok, pkgName := findTestSourceDirectory()
+	testSrcDir, testTopDir, ok, pkgName := findTestSourceDirectory()
 	if !ok {
 		exit(fmt.Errorf("No test files are found"), codeTestsFailed)
 	}
 
-	compileAllJavaFilesUnderSrc(testSrcDir, testDir, pkgName)
+	compileAllJavaFilesUnderSrc(testSrcDir, testTopDir, pkgName)
 
-	runPath := "."
-	srcPath := ""
+	runDir := "."
+	sourcepath := ""
 
-	if strings.HasSuffix(testDir, PS+"test") {
-		runPath = ".."
-		srcPath = ".." + PS + "src" + PLS + ".." + PS + "test"
+	// If testTopDir ends with "/test" then, tests will be invoked
+	// from its parent directory("..). In other words, some necessary
+	// files to be compiled may be located under "src" and "test" directories.
+	// Therefore "-sourcepath" option is used to specifiy such directories.
+	if strings.HasSuffix(testTopDir, PS+"test") {
+		runDir = ".."
+		sourcepath = ".." + PS + "src" + PLS + ".." + PS + "test"
 	}
 
 	testFiles := listTestFiles(testSrcDir)
@@ -89,9 +99,9 @@ func findTestsAndRunThem(args []string) {
 	for _, file := range testFiles {
 		// copmileAndRunTest() will change the current directory.
 		// So make sure to be the right directory every time.
-		changeDirectoryTo(testDir)
+		changeDirectoryTo(testTopDir)
 
-		compileAndRunTest(runPath, srcPath, pkgDir+file, args)
+		compileAndRunTest(runDir, sourcepath, pkgDir+file, args)
 	}
 }
 
@@ -198,11 +208,11 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 	return dir + srcPath, dir, true, pkg
 }
 
-func compileAsTest(srcPath, src string) {
+func compileAsTest(sourcepath, src string) {
 	args := []string{"-d", oakBinPath}
 	args = append(args, []string{"-classpath", "." + PLS + junitPath + PLS + oakBinPath}...)
-	if srcPath != "" {
-		args = append(args, "-sourcepath", srcPath)
+	if sourcepath != "" {
+		args = append(args, "-sourcepath", sourcepath)
 	}
 	if *eFlag != "" {
 		args = append(args, "-encoding", *eFlag)
@@ -211,10 +221,11 @@ func compileAsTest(srcPath, src string) {
 	javac(args)
 }
 
-func compileAndRunTest(runPath, srcPath, src string, options []string) {
-	compileAsTest(srcPath, src)
+func compileAndRunTest(runDir, sourcepath, srcFilePath string, options []string) {
 
-	changeDirectoryTo(runPath)
+	compileAsTest(sourcepath, srcFilePath)
+
+	changeDirectoryTo(runDir)
 
 	args := []string{"-classpath", oakBinPath + PLS + "src" + PLS + junitPath}
 	args = append(args, runner)
@@ -229,8 +240,9 @@ func compileAndRunTest(runPath, srcPath, src string, options []string) {
 		}
 	}
 
-	src = strings.Replace(src, PS, ".", -1)
-	args = append(args, src[:len(src)-5])
+	srcPackagePath := strings.Replace(srcFilePath, PS, ".", -1)
+	srcPackagePath = srcPackagePath[:len(srcPackagePath)-len(".java")]
+	args = append(args, srcPackagePath)
 
 	javaOneMinuteTimeout(args, codeTestsFailed)
 }

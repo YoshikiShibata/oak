@@ -15,19 +15,17 @@ func javac(args []string) {
 	dShowCWD()
 	lintOptions := []string{"-Xlint:unchecked", "-Xlint:deprecation"}
 	args = append(lintOptions, args...)
-	dPrintf("javac %s\n", strings.Join(args, " "))
-	cmd := exec.Command("javac", args...)
-	redirect(cmd)
-	err := cmd.Run()
-	if err != nil {
-		exit(err, codeCompileError)
-	}
+	execCommand("javac", args...)
 }
 
 func java(args []string) {
 	dShowCWD()
-	dPrintf("java %s\n", strings.Join(args, " "))
-	cmd := exec.Command("java", args...)
+	execCommand("java", args...)
+}
+
+func execCommand(name string, args ...string) {
+	dPrintf("%s %s\n", name, strings.Join(args, " "))
+	cmd := exec.Command(name, args...)
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
@@ -46,7 +44,7 @@ func javaTimeout(args []string, timeout time.Duration, failExitCode, timeoutExit
 	cmd := exec.Command("java", args...)
 	redirect(cmd)
 
-	// After one minute, any unfinished tests will be aborted.
+	// After the specified 'timeout' elapesed, any unfinished commands will be aborted.
 	ticker := time.NewTicker(timeout)
 	timeouted := false
 	cancel := make(chan struct{})

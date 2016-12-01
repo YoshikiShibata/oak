@@ -12,12 +12,16 @@ import (
 
 func dShowCWD() {
 	if *dFlag {
-		wd, err := os.Getwd()
-		if err != nil {
-			exit(err, 1)
-		}
-		dPrintf("CWD = %s\n", wd)
+		dPrintf("CWD = %s\n", getCWD())
 	}
+}
+
+func getCWD() string {
+	cwd, err := os.Getwd()
+	if err != nil {
+		exit(err, 1)
+	}
+	return cwd
 }
 
 func exit(err error, exitCode int) {

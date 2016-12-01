@@ -32,10 +32,7 @@ func generateAndCompileJUnitRunner() {
 	src := generateJUnitRunnerSource()
 
 	// save the current directory
-	cwd, err := os.Getwd()
-	if err != nil {
-		exit(err, codeError)
-	}
+	cwd := getCWD()
 
 	changeDirectoryTo(oakSrcPath)
 	compileAsTest("", src)
@@ -126,10 +123,7 @@ func compileAllJavaFilesUnderSrc(testSrcDir, testDir, pkgName string) {
 	javaFiles := listJavaFiles(srcSrcDir)
 
 	// save the current directory
-	cwd, err := os.Getwd()
-	if err != nil {
-		exit(err, codeError)
-	}
+	cwd := getCWD()
 
 	pkgDir := toPackageDirectory(pkgName)
 
@@ -170,10 +164,7 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 	pkg := findPackageFromCurrentDirectory()
 	dPrintf("package = %q\n", pkg)
 
-	dir, err := os.Getwd()
-	if err != nil {
-		exit(err, codeError)
-	}
+	dir := getCWD()
 
 	srcPath := ""
 

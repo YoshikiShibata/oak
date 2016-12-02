@@ -137,7 +137,13 @@ var PS = string([]rune{os.PathSeparator})
 var PLS = string([]rune{os.PathListSeparator})
 
 // removeDirectory removes all files including directories recursively.
+// Note that the runner path for JUnitRunner will not be deleted for performance.
 func removeDirectory(dirPath string) {
+	// Don't delete the runner path for JUnitRunner
+	if dirPath == oakRunnerPath {
+		return
+	}
+
 	dir, err := os.Open(dirPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -162,6 +168,11 @@ func removeDirectory(dirPath string) {
 		if err != nil {
 			exit(err, 1)
 		}
+	}
+
+	// Don't delete any directory in the runner path
+	if strings.HasPrefix(oakRunnerPath, dirPath) {
+		return
 	}
 
 	err = os.Remove(dirPath)

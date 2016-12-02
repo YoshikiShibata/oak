@@ -2,6 +2,7 @@
 
 package main
 
+const runnerVersion="1.0"
 const runner="jp.ne.sonet.ca2.yshibata.JUnitRunner"
 
 const runnerJavaSrc = `

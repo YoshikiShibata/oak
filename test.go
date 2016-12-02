@@ -14,8 +14,13 @@ var cmdTest = &Command{
 	Long:      `Test compiles JUnit program and runs JUnit test methods.`,
 }
 
+// oakSrcPathWithVersion points to a directory where the source file of JUnitRunner
+// is stored.
+var oakSrcPathWithVersion string
+
 func init() {
 	cmdTest.Run = testRun
+	oakSrcPathWithVersion = oakSrcPath + runnerVersion
 }
 
 func testRun(cmd *Command, args []string) {
@@ -29,12 +34,19 @@ var junitPath = junitClassPath()
 // createAndCompileJUnitRunner generates the JUnitRunner Java source code,
 // and then compile the source code against JUnit libraries.
 func generateAndCompileJUnitRunner() {
+	// determines if JUnitRunner has been already compiled by checking
+	// the existence of its src (with version) directory.
+	_, err := os.Stat(oakSrcPathWithVersion)
+	if err == nil {
+		return
+	}
+
 	src := generateJUnitRunnerSource()
 
 	// save the current directory
 	cwd := getCWD()
 
-	changeDirectoryTo(oakSrcPath)
+	changeDirectoryTo(oakSrcPathWithVersion)
 	compileAsTest("", src)
 
 	// restore to the original directory
@@ -47,7 +59,7 @@ func generateJUnitRunnerSource() string {
 	paths := strings.Split(runner, ".")
 
 	// compute the directory name where the source file of JUnitRunner should be stored.
-	dir := oakSrcPath + PS + strings.Join(paths[:len(paths)-1], PS)
+	dir := oakSrcPathWithVersion + PS + strings.Join(paths[:len(paths)-1], PS)
 
 	// create the directory.
 	err := os.MkdirAll(dir, os.ModePerm)

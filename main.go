@@ -70,6 +70,7 @@ var commands = []*Command{
 var vFlag = flag.Bool("v", false, "verbose for test command")
 var dFlag = flag.Bool("d", false, "debug")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
+var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {
@@ -122,6 +123,11 @@ func parseVerboseFlag() []string {
 // Every time when this command is executed, the bin directory will be
 // newly created by deleting the existing one.
 func recreateBin() {
+
+	if *lFlag {
+		return // don't delete the existing directory. Reuse it.
+	}
+
 	removeDirectory(oakBinPath)
 
 	err := os.MkdirAll(oakBinPath, os.ModePerm)

@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime/trace"
 	"strings"
 )
 
@@ -18,6 +19,8 @@ const (
 	codeNoMainMethod     = 5 // no main method
 	codeMainFailed       = 6 // executing main failed
 )
+
+const traceFile = "oak.trace.out"
 
 // A Command is an implementation of the oak command like go run or go test
 type Command struct {
@@ -71,6 +74,7 @@ var vFlag = flag.Bool("v", false, "verbose for test command")
 var dFlag = flag.Bool("d", false, "debug")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
 var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it")
+var traceFlag = flag.Bool("trace", false, fmt.Sprintf("produce profile as %s", traceFile))
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {
@@ -98,13 +102,43 @@ func main() {
 		return
 	}
 
+	profFile := startTrace()
+
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] && cmd.Runnable() {
 			cmd.Run(cmd, args[1:])
+			stopTrace(profFile)
 			os.Exit(0)
 		}
 	}
+
+	stopTrace(profFile)
 	help([]string{})
+}
+
+func startTrace() *os.File {
+	if !*traceFlag {
+		return nil
+	}
+
+	profFile, err := os.Create(traceFile)
+	if err != nil {
+		exit(err, 1)
+	}
+	trace.Start(profFile)
+	return profFile
+}
+
+func stopTrace(f *os.File) {
+	if f == nil {
+		return
+	}
+
+	trace.Stop()
+	f.Close()
+	fmt.Printf("Trace is stored as %q.\n", traceFile)
+	fmt.Printf("To view the file, run the following command:\n")
+	fmt.Printf("\tgo tool trace %s\n", traceFile)
 }
 
 // parseVerboseFlag check if one of arguments is "-v" and return arguments execpt the flag.

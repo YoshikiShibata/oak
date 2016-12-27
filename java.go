@@ -3,11 +3,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -41,34 +43,32 @@ func javaTimeout(args []string, timeout time.Duration, failExitCode, timeoutExit
 	dShowCWD()
 	dPrintf("java %s\n", strings.Join(args, " "))
 
-	cmd := exec.Command("java", args...)
+	ctxt, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctxt, "java", args...)
 	redirect(cmd)
 
-	// After the specified 'timeout' elapesed, any unfinished commands will be aborted.
-	ticker := time.NewTicker(timeout)
-	timeouted := false
-	cancel := make(chan struct{})
-	go func() {
-		select {
-		case <-ticker.C:
-			cmd.Process.Kill()
-			timeouted = true
-		case <-cancel:
-		}
-	}()
-
 	err := cmd.Run()
-	ticker.Stop()
-	close(cancel)
 
 	if err != nil {
-		if timeouted {
+		if isTimeoutError(err) {
 			exit(fmt.Errorf("\n\n%d SECONDS TIMEOUT! ABORTED(%v)",
 				timeout/time.Second, err), timeoutExitCode)
 		} else {
 			exit(err, failExitCode)
 		}
 	}
+}
+
+func isTimeoutError(err error) bool {
+	exitErr, ok := err.(*exec.ExitError)
+	if !ok {
+		return false
+	}
+
+	status := exitErr.Sys().(syscall.WaitStatus)
+	return status.Signaled()
 }
 
 func redirect(cmd *exec.Cmd) {

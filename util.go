@@ -8,6 +8,8 @@ import (
 	"io"
 	"os"
 	"strings"
+
+	"github.com/YoshikiShibata/tools/util/files"
 )
 
 func dShowCWD() {
@@ -96,25 +98,11 @@ func findPackageFromCurrentDirectory() string {
 }
 
 func listJavaFiles(dir string) []string {
-	d, err := os.Open(dir)
+	javaFiles, err := files.ListFiles(dir, func(file string) bool {
+		return strings.HasSuffix(file, ".java")
+	})
 	if err != nil {
 		exit(err, 1)
-	}
-	defer d.Close()
-
-	files, err := d.Readdir(0)
-	if err != nil {
-		exit(err, 1)
-	}
-	if len(files) == 0 {
-		return nil
-	}
-
-	javaFiles := make([]string, 0, len(files))
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".java") {
-			javaFiles = append(javaFiles, file.Name())
-		}
 	}
 	return javaFiles
 }

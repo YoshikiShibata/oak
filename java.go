@@ -1,4 +1,4 @@
-// Copyright © 2016 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -31,7 +31,14 @@ func execCommand(name string, args ...string) {
 	redirect(cmd)
 	err := cmd.Run()
 	if err != nil {
-		exit(err, codeMainFailed)
+		switch name {
+		case "javac":
+			exit(err, codeCompileError)
+		case "java":
+			exit(err, codeMainFailed)
+		default:
+			exit(err, codeError)
+		}
 	}
 }
 

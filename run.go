@@ -1,4 +1,4 @@
-// Copyright © 2016 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/YoshikiShibata/oak/slices"
+	"github.com/YoshikiShibata/tools/util/files"
 )
 
 var cmdRun = &Command{
@@ -86,7 +87,7 @@ func findMainSourceFiles() []string {
 }
 
 func containsMainMethod(javaFile string) bool {
-	lines, err := readLinesFromFile(javaFile)
+	lines, err := files.ReadAllLines(javaFile)
 	if err != nil {
 		exit(err, codeError)
 	}

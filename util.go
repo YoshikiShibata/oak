@@ -1,11 +1,9 @@
-// Copyright © 2016 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
 
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
@@ -43,44 +41,21 @@ func changeDirectoryTo(path string) {
 }
 
 func findPackage(javaFile string) string {
-	lines, err := readLinesFromFile(javaFile)
+	lines, err := files.ReadAllLines(javaFile)
 	if err != nil {
 		exit(err, 1)
 	}
 
 	for _, line := range lines {
-		if strings.HasPrefix(line, "package") {
+		dPrintf("%s: %q\n", javaFile, line)
+		if strings.HasPrefix(line, "package") ||
+			strings.HasPrefix(line, "\ufeffpackage") {
 			tokens := strings.Split(line, " ")
 			tokens = strings.Split(tokens[1], ";")
 			return tokens[0]
 		}
 	}
 	return ""
-}
-
-func readLinesFromFile(file string) ([]string, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	return readLines(f)
-}
-
-func readLines(reader io.Reader) ([]string, error) {
-	lines := make([]string, 0, 1024)
-	r := bufio.NewReader(reader)
-
-	for {
-		line, err := r.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				return lines, nil
-			}
-			return lines, err
-		}
-		lines = append(lines, line)
-	}
 }
 
 func findPackageFromCurrentDirectory() string {
@@ -91,6 +66,7 @@ func findPackageFromCurrentDirectory() string {
 	pkg := findPackage(javaFiles[0])
 	for _, file := range javaFiles[1:] {
 		if pkg != findPackage(file) {
+			dPrintf("%q vs %q(%s)\n", pkg, findPackage(file), file)
 			exit(fmt.Errorf("multiple packages exist"), 1)
 		}
 	}

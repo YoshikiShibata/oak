@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/YoshikiShibata/oak/slices"
 	"github.com/YoshikiShibata/tools/util/files"
+	"github.com/YoshikiShibata/tools/util/slices"
 )
 
 var cmdRun = &Command{

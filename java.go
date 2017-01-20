@@ -5,7 +5,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -79,18 +78,7 @@ func isTimeoutError(err error) bool {
 }
 
 func redirect(cmd *exec.Cmd) {
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		exit(err, codeError)
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		exit(err, codeError)
-	}
-	go func() {
-		io.Copy(os.Stderr, stderr)
-	}()
-	go func() {
-		io.Copy(os.Stdout, stdout)
-	}()
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 }

@@ -15,13 +15,15 @@ import (
 var cpuProfileFile string
 var memProfileFile string
 
-var cpuprofile = flag.Bool("cpuprofile", false, fmt.Sprintf("write cpu profie as %q", cpuProfileFile))
-var memprofile = flag.Bool("memprofile", false, fmt.Sprintf("write memory profile as %q", memProfileFile))
+var cpuprofile *bool
+var memprofile *bool
 
 func init() {
 	cwd := getCWD()
 	cpuProfileFile = cwd + PS + "oak.cpu.prof"
 	memProfileFile = cwd + PS + "oak.mem.prof"
+	cpuprofile = flag.Bool("cpuprofile", false, fmt.Sprintf("write cpu profie as %q", cpuProfileFile))
+	memprofile = flag.Bool("memprofile", false, fmt.Sprintf("write memory profile as %q", memProfileFile))
 }
 
 func startCPUProfile() *os.File {

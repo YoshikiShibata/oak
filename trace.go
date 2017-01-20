@@ -12,11 +12,12 @@ import (
 )
 
 var traceFile string
-var traceFlag = flag.Bool("trace", false, fmt.Sprintf("produce profile as %q", traceFile))
+var traceFlag *bool
 
 func init() {
 	cwd := getCWD()
 	traceFile = cwd + PS + "oak.trace.out"
+	traceFlag = flag.Bool("trace", false, fmt.Sprintf("produce profile as %q", traceFile))
 }
 
 func startTrace() *os.File {

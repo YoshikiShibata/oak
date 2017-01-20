@@ -70,7 +70,7 @@ var commands = []*Command{
 var vFlag = flag.Bool("v", false, "verbose for test command")
 var dFlag = flag.Bool("d", false, "debug")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
-var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it")
+var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {

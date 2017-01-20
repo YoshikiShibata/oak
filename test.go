@@ -212,6 +212,13 @@ func findTestSourceDirectory() (testSrcDir, testDir string, ok bool, pkgName str
 			return dir + srcPath, dir, true, pkg
 		}
 		f.Close()
+
+		if len(listJavaFiles(testDir+srcPath)) == 0 {
+			// If there is no java file under the "test" directory,
+			// then ingore the "test" directory and use "src" directory.
+			return dir + srcPath, dir, true, pkg
+		}
+
 		return testDir + srcPath, testDir, true, pkg
 	}
 

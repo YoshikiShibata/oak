@@ -32,7 +32,7 @@ To use oak, you have to change the currently directory to the directory where Ja
 
 * **run** command compiles the specified Java file and run its main method. If java file is not specified such as `oak run`, then all `.java` files are searched locally and the first one which has a line starting with either `public static void main` or `static public void main` will be considered as the java file.
 
-* **test** command compiles all test Java files of which file names end with "Test.java" and run all test methods.
+* **test** command compiles all JUnit-based test Java files and run all test methods.
 `-v` option shows both names of test class and test method. `-run=` option accept a regular expression for filtering test methods. For example, `-run=.` will run all tests.
 If tests will not be completed within one minute, then they will be aborted.
 

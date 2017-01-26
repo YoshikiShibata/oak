@@ -96,9 +96,32 @@ func listFiles(dir string, testFile bool) []string {
 	files := make([]string, 0, len(javaFiles))
 
 	for _, file := range javaFiles {
-		if strings.HasSuffix(file, "Test.java") == testFile {
+		if isJUnitTestFile(dir, file) == testFile {
 			files = append(files, file)
 		}
 	}
 	return files
+}
+
+func isJUnitTestFile(dir, file string) bool {
+	lines, err := files.ReadAllLines(dir + PS + file)
+	if err != nil {
+		exit(err, 1)
+	}
+
+	junitImported := false
+	for _, line := range lines {
+		if !junitImported &&
+			strings.HasPrefix(line, "import") &&
+			strings.Index(line, "org.junit.") > 0 {
+			junitImported = true
+			continue
+		}
+
+		if junitImported &&
+			strings.HasPrefix(strings.TrimSpace(line), "@Test") {
+			return true
+		}
+	}
+	return false
 }

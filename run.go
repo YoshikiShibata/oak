@@ -97,12 +97,16 @@ func containsMainMethod(javaFile string) bool {
 		line = strings.TrimSpace(line)
 		unescapedLines = append(unescapedLines, line)
 		if !strings.HasPrefix(line, "//") && isMainMethod(line) {
+			dPrintf("%q\n", unescapedLines)
 			return true
 		}
 	}
 
 	var tokens []string
 	for _, line := range unescapedLines {
+		if strings.HasPrefix(line, "//") {
+			continue
+		}
 		for _, token := range strings.Split(line, " {}()") {
 			tokens = append(tokens, strings.TrimSpace(token))
 		}

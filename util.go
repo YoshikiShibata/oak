@@ -3,7 +3,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -47,6 +49,7 @@ func findPackage(javaFile string) string {
 	}
 
 	for _, line := range lines {
+		line := unescapeUnicode(line)
 		dPrintf("%s: %q\n", javaFile, line)
 		if strings.HasPrefix(line, "package") ||
 			strings.HasPrefix(line, "\ufeffpackage") {
@@ -111,6 +114,7 @@ func isJUnitTestFile(dir, file string) bool {
 
 	junitImported := false
 	for _, line := range lines {
+		line := unescapeUnicode(line)
 		if !junitImported &&
 			strings.HasPrefix(line, "import") &&
 			strings.Index(line, "org.junit.") > 0 {
@@ -124,4 +128,37 @@ func isJUnitTestFile(dir, file string) bool {
 		}
 	}
 	return false
+}
+
+func unescapeUnicode(line string) string {
+	index := strings.Index(line, `\u`)
+	if index < 0 {
+		return line
+	}
+
+	var buf bytes.Buffer
+
+	if index != 0 {
+		buf.WriteString(line[0:index])
+	}
+
+	var r rune
+	n, err := fmt.Sscanf(line[index+2:index+6], "%X", &r)
+	if err != nil {
+		exit(err, codeError)
+	}
+	if n != 1 {
+		log.Printf("n is %d, but want 1\n", n)
+		exit(err, codeError)
+	}
+	n, err = buf.WriteRune(r)
+	if err != nil {
+		exit(err, codeError)
+	}
+	if n != 1 {
+		log.Printf("n is %d, but want 1\n", n)
+		exit(err, codeError)
+	}
+	buf.WriteString(line[index+6:])
+	return unescapeUnicode(buf.String())
 }

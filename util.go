@@ -51,6 +51,7 @@ func findPackage(javaFile string) string {
 	for _, line := range lines {
 		line := unescapeUnicode(line)
 		dPrintf("%s: %q\n", javaFile, line)
+		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, "package") ||
 			strings.HasPrefix(line, "\ufeffpackage") {
 			tokens := strings.Split(line, " ")

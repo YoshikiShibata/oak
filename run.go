@@ -96,7 +96,7 @@ func containsMainMethod(javaFile string) bool {
 		line := unescapeUnicode(line)
 		line = strings.TrimSpace(line)
 		unescapedLines = append(unescapedLines, line)
-		if isMainMethod(line) {
+		if !strings.HasPrefix(line, "//") && isMainMethod(line) {
 			return true
 		}
 	}

@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2017 Yoshiki Shibata. All rights reserved.
 
 function createRunner {
     rm -f runner.go
@@ -58,7 +58,8 @@ for dir in simpleRun \
 		issues/044 \
 		issues/047 \
 		issues/049 \
-		issues/051;
+		issues/051 \
+		issues/053;
 do
     cd $TOP_DIR/tests/$dir
 	echo ""

@@ -91,15 +91,29 @@ func containsMainMethod(javaFile string) bool {
 	if err != nil {
 		exit(err, codeError)
 	}
+	var unescapedLines []string
 	for _, line := range lines {
+		line := unescapeUnicode(line)
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "public static void main(") ||
-			strings.HasPrefix(line, "static public void main(") ||
-			strings.HasPrefix(line, "public void start(Stage") {
+		unescapedLines = append(unescapedLines, line)
+		if isMainMethod(line) {
 			return true
 		}
 	}
-	return false
+
+	var tokens []string
+	for _, line := range unescapedLines {
+		for _, token := range strings.Split(line, " {}()") {
+			tokens = append(tokens, strings.TrimSpace(token))
+		}
+	}
+	return isMainMethod(strings.Join(tokens, " "))
+}
+
+func isMainMethod(line string) bool {
+	return strings.Index(line, "public static void main(") >= 0 ||
+		strings.Index(line, "static public void main(") >= 0 ||
+		strings.Index(line, "public void start(Stage") >= 0
 }
 
 func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string, srcPath string) {

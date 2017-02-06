@@ -149,17 +149,14 @@ func unescapeUnicode(line string) string {
 		exit(err, codeError)
 	}
 	if n != 1 {
-		log.Printf("n is %d, but want 1\n", n)
+		log.Printf("n is %d, but want 1(%q)\n", n, line[index+2:index+6])
 		exit(err, codeError)
 	}
-	n, err = buf.WriteRune(r)
+	_, err = buf.WriteRune(r)
 	if err != nil {
 		exit(err, codeError)
 	}
-	if n != 1 {
-		log.Printf("n is %d, but want 1\n", n)
-		exit(err, codeError)
-	}
+
 	buf.WriteString(line[index+6:])
 	return unescapeUnicode(buf.String())
 }

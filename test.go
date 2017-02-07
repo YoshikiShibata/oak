@@ -151,6 +151,10 @@ func compileAllJavaFilesUnderSrc(testSrcDir, testDir, pkgName string) {
 
 	files := []string{}
 	for _, file := range javaFiles {
+		if isJUnitTestFile(srcSrcDir, file) {
+			fmt.Fprintf(os.Stderr, "\nWARNING: %s is ignored: move it into \"test\" directory\n\n", file)
+			continue
+		}
 		files = append(files, pkgDir+file)
 	}
 

@@ -132,7 +132,7 @@ func isJUnitTestFile(dir, file string) bool {
 }
 
 func unescapeUnicode(line string) string {
-	index := strings.Index(line, `\u`)
+	index := indexOfUnicodeEscape(line)
 	if index < 0 {
 		return line
 	}
@@ -159,4 +159,38 @@ func unescapeUnicode(line string) string {
 
 	buf.WriteString(line[index+6:])
 	return unescapeUnicode(buf.String())
+}
+
+func indexOfUnicodeEscape(line string) int {
+	index := strings.Index(line, `\u`)
+	if index < 0 {
+		return index
+	}
+
+	// From the Java Language Specification
+	//
+	// In addition to the processing implied by the grammar, for each raw
+	// input character that is a backslash \, input processing must consider
+	// how many other \ characters contiguously precede it, separating it
+	// from a non-\ character or the start of the input stream. If this
+	// number is even, then the \ is eligible to begin a Unicode escape; if
+	// the number is odd, then the \ is not eligible to begin a Unicode escape.
+	count := 0
+	for i := index; i >= 0; i-- {
+		if line[i] != '\\' {
+			break
+		}
+		count++
+	}
+
+	log.Printf("slash count = %d\n", count)
+	if (count % 2) == 1 {
+		return index
+	}
+
+	nextIndex := indexOfUnicodeEscape(line[index+2:])
+	if nextIndex < 0 {
+		return -1
+	}
+	return index + 2 + nextIndex
 }

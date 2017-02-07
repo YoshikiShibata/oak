@@ -183,7 +183,6 @@ func indexOfUnicodeEscape(line string) int {
 		count++
 	}
 
-	log.Printf("slash count = %d\n", count)
 	if (count % 2) == 1 {
 		return index
 	}

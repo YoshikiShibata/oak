@@ -139,17 +139,29 @@ func unescapeUnicode(line string) string {
 
 	var buf bytes.Buffer
 
+	// write out leading characters
 	if index != 0 {
 		buf.WriteString(line[0:index])
 	}
 
+	// advance index to the correct position: skip repeated 'u'
+	for index++; index < len(line); index++ {
+		if line[index] != 'u' {
+			break
+		}
+	}
+	if index == len(line) {
+		exit(fmt.Errorf("Illegal Unicode Escape"), codeError)
+	}
+
+	// parse a Unicode escape sequence
 	var r rune
-	n, err := fmt.Sscanf(line[index+2:index+6], "%X", &r)
+	n, err := fmt.Sscanf(line[index:index+4], "%X", &r)
 	if err != nil {
 		exit(err, codeError)
 	}
 	if n != 1 {
-		log.Printf("n is %d, but want 1(%q)\n", n, line[index+2:index+6])
+		log.Printf("n is %d, but want 1(%q)\n", n, line[index:index+4])
 		exit(err, codeError)
 	}
 	_, err = buf.WriteRune(r)
@@ -157,7 +169,9 @@ func unescapeUnicode(line string) string {
 		exit(err, codeError)
 	}
 
-	buf.WriteString(line[index+6:])
+	// flush out remaining characters
+	buf.WriteString(line[index+4:])
+
 	return unescapeUnicode(buf.String())
 }
 

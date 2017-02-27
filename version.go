@@ -7,7 +7,7 @@ import (
 	"runtime"
 )
 
-const oakVersion = "1.33"
+const oakVersion = "1.34"
 
 var cmdVersion = &Command{
 	Run:       runVersion,

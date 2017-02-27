@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
+ * Copyright (C) 2016, 2017 Yoshiki Shibata. All rights reserved.
  */
 package jp.ne.sonet.ca2.yshibata;
 
@@ -92,6 +92,22 @@ public class JUnitRunner {
         if (result.getFailureCount() != 0) {
             System.exit(1);
         }
+
+		// Make sure that there is only the main thread
+		ThreadGroup tg = Thread.currentThread().getThreadGroup();
+		if (tg.activeCount() > 1) {
+			Thread[] threads = new Thread[tg.activeCount()];
+			tg.enumerate(threads);
+			for (Thread t: threads) {
+				if (t.getName().equals("main")) 
+					continue;
+
+				if (t != null) {
+					System.out.printf("%s is still ALIVE%n", t);
+				}
+			}
+			System.exit(1);
+		}
     }
 
     private static void showUsage() {

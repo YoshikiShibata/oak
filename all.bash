@@ -8,7 +8,7 @@ function createRunner {
     echo "" >> runner.go
     echo "package main" >> runner.go
     echo "" >> runner.go
-	echo "const runnerVersion=\"1.0\"" >> runner.go
+	echo "const runnerVersion=\"1.1\"" >> runner.go
     echo "const runner=\"jp.ne.sonet.ca2.yshibata.JUnitRunner\"" >> runner.go
     echo "" >> runner.go
     echo "const runnerJavaSrc = \`" >> runner.go

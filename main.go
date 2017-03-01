@@ -9,6 +9,22 @@ import (
 	"strings"
 )
 
+var (
+	oakBinPath    string
+	oakSrcPath    string
+	oakRunnerPath string
+	// oakSrcPathWithVersion points to a directory where the source file
+	// of JUnitRunner is stored.
+	oakSrcPathWithVersion string
+)
+
+func initializePaths(tempDir string) {
+	oakBinPath = tempDir + PS + "bin"
+	oakSrcPath = tempDir + PS + "src"
+	oakSrcPath = oakBinPath + PS + "jp/ne/sonet/ca2/yshibata"
+	oakSrcPathWithVersion = oakSrcPath + runnerVersion
+}
+
 // Exit code
 const (
 	codeError            = 1 // general error
@@ -71,6 +87,7 @@ var vFlag = flag.Bool("v", false, "verbose for test command")
 var dFlag = flag.Bool("d", false, "debug")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
 var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
+var tempFlag = flag.String("temp", defaultTempDir, "temporary working directory")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {
@@ -100,6 +117,8 @@ func main() {
 
 	profFile := startTrace()
 	cpuProfile := startCPUProfile()
+
+	initializePaths(*tempFlag)
 
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] && cmd.Runnable() {

@@ -154,12 +154,26 @@ func parseVerboseFlag() []string {
 func recreateBin() {
 
 	if *lFlag {
-		return // don't delete the existing directory. Reuse it.
+		// Make sure that the directoy exists.
+		dir, err := os.Open(oakBinPath)
+		if err == nil {
+			dir.Close()
+			return
+		}
+		if !os.IsNotExist(err) {
+			exit(err, 1)
+		}
+
+		createDirectory(oakBinPath)
+		return
 	}
 
 	removeDirectory(oakBinPath)
+	createDirectory(oakBinPath)
+}
 
-	err := os.MkdirAll(oakBinPath, os.ModePerm)
+func createDirectory(path string) {
+	err := os.MkdirAll(path, os.ModePerm)
 	if err != nil {
 		exit(err, 1)
 	}

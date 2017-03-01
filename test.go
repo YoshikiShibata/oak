@@ -14,13 +14,8 @@ var cmdTest = &Command{
 	Long:      `Test compiles JUnit program and runs JUnit test methods.`,
 }
 
-// oakSrcPathWithVersion points to a directory where the source file of JUnitRunner
-// is stored.
-var oakSrcPathWithVersion string
-
 func init() {
 	cmdTest.Run = testRun
-	oakSrcPathWithVersion = oakSrcPath + runnerVersion
 }
 
 func testRun(cmd *Command, args []string) {

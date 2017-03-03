@@ -82,7 +82,8 @@ func listJavaFiles(dir string) []string {
 		return strings.HasSuffix(file, ".java")
 	})
 	if err != nil {
-		exit(err, 1)
+		// Any error results in an empty list
+		return nil
 	}
 	return javaFiles
 }

@@ -21,7 +21,7 @@ var (
 func initializePaths(tempDir string) {
 	oakBinPath = tempDir + PS + "bin"
 	oakSrcPath = tempDir + PS + "src"
-	oakSrcPath = oakBinPath + PS + "jp/ne/sonet/ca2/yshibata"
+	oakRunnerPath = oakBinPath + PS + "jp/ne/sonet/ca2/yshibata"
 	oakSrcPathWithVersion = oakSrcPath + runnerVersion
 }
 

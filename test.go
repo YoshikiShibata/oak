@@ -31,6 +31,7 @@ var junitPath = junitClassPath()
 func generateAndCompileJUnitRunner() {
 	// determines if JUnitRunner has been already compiled by checking
 	// the existence of its src (with version) directory.
+	dPrintf("oakSrcPathWithVersion=%q\n", oakSrcPathWithVersion)
 	_, err := os.Stat(oakSrcPathWithVersion)
 	if err == nil {
 		return

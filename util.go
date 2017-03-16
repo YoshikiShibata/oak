@@ -12,12 +12,6 @@ import (
 	"github.com/YoshikiShibata/tools/util/files"
 )
 
-func dShowCWD() {
-	if *dFlag {
-		dPrintf("CWD = %s\n", getCWD())
-	}
-}
-
 func getCWD() string {
 	cwd, err := os.Getwd()
 	if err != nil {

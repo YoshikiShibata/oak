@@ -1,4 +1,4 @@
-// Copyright © 2016 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -84,19 +84,12 @@ var commands = []*Command{
 }
 
 var vFlag = flag.Bool("v", false, "verbose for test command")
-var dFlag = flag.Bool("d", false, "debug")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
 var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
 var tempFlag = flag.String("temp", defaultTempDir, "temporary working directory")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {
-		fmt.Printf(format, args...)
-	}
-}
-
-func dPrintf(format string, args ...interface{}) {
-	if *dFlag {
 		fmt.Printf(format, args...)
 	}
 }

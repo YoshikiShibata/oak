@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/YoshikiShibata/tools/util/files"
 )
 
 var cmdTest = &Command{
@@ -273,34 +275,19 @@ func junitClassPath() string {
 	}
 
 	junitPath := oakHome + "/tools/junit"
-	d, err := os.Open(junitPath)
+
+	jarFiles, err := files.ListFiles(junitPath,
+		func(fileName string) bool {
+			return strings.HasPrefix(fileName, "junit-") ||
+				strings.HasPrefix(fileName, "java-hamcrest-")
+
+		})
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "OAK_HOME=%s seems incorrect\n", oakHome)
 		exit(err, codeError)
 	}
 
-	defer d.Close()
-
-	files, err := d.Readdir(0)
-	if err != nil {
-		exit(err, codeError)
-	}
-
-	if len(files) == 0 {
-		exit(fmt.Errorf("Jar files of JUNIT are not found"), codeError)
-	}
-
-	jarFiles := make([]string, 0, len(files))
-	for _, file := range files {
-		name := file.Name()
-		if !strings.HasSuffix(name, ".jar") {
-			continue
-		}
-		if strings.HasPrefix(name, "junit-") ||
-			strings.HasPrefix(name, "java-hamcrest-") {
-			jarFiles = append(jarFiles, name)
-		}
-	}
 	if len(jarFiles) != 2 {
 		exit(fmt.Errorf("Jar files of JUNIT are not found"), codeError)
 	}

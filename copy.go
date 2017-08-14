@@ -1,5 +1,7 @@
 // Copyright © 2017 Yoshiki Shibata. All rights reserved.
 
+// +build ignore
+
 package main
 
 import (

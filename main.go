@@ -147,7 +147,7 @@ func parseVerboseFlag() []string {
 func recreateBin() {
 
 	if *lFlag {
-		// Make sure that the directoy exists.
+		// Make sure that the directory exists.
 		dir, err := os.Open(oakBinPath)
 		if err == nil {
 			dir.Close()

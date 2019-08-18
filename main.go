@@ -87,7 +87,7 @@ var vFlag = flag.Bool("v", false, "verbose for test command")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
 var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
 var tempFlag = flag.String("temp", defaultTempDir, "temporary working directory")
-var pFlag = flag.Bool("p", false, "enable preview")
+var pFlag = flag.String("p", "", "enable preview")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {

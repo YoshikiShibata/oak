@@ -16,8 +16,12 @@ func javac(args []string) {
 	dShowCWD()
 	lintOptions := []string{"-Xlint:unchecked", "-Xlint:deprecation"}
 	args = append(lintOptions, args...)
-	if *pFlag {
+	switch *pFlag {
+	case "12":
 		previewOption := []string{"--enable-preview", "--release=12"}
+		args = append(previewOption, args...)
+	case "13":
+		previewOption := []string{"--enable-preview", "--release=13"}
 		args = append(previewOption, args...)
 	}
 	execCommand("javac", args...)
@@ -25,7 +29,7 @@ func javac(args []string) {
 
 func java(args []string) {
 	dShowCWD()
-	if *pFlag {
+	if len(*pFlag) != 0 {
 		previewOption := []string{"--enable-preview"}
 		args = append(previewOption, args...)
 	}

@@ -93,7 +93,7 @@ func findTestsAndRunThem(args []string) {
 	// If testTopDir ends with "/test" then, tests will be invoked
 	// from its parent directory("..). In other words, some necessary
 	// files to be compiled may be located under "src" and "test" directories.
-	// Therefore "-sourcepath" option is used to specifiy such directories.
+	// Therefore "-sourcepath" option is used to specify such directories.
 	if strings.HasSuffix(testTopDir, PS+"test") {
 		runDir = ".."
 		sourcepath = ".." + PS + "src" + PLS + ".." + PS + "test"

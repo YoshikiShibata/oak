@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2019 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -16,11 +16,23 @@ func javac(args []string) {
 	dShowCWD()
 	lintOptions := []string{"-Xlint:unchecked", "-Xlint:deprecation"}
 	args = append(lintOptions, args...)
+	switch *pFlag {
+	case "12":
+		previewOption := []string{"--enable-preview", "--release=12"}
+		args = append(previewOption, args...)
+	case "13":
+		previewOption := []string{"--enable-preview", "--release=13"}
+		args = append(previewOption, args...)
+	}
 	execCommand("javac", args...)
 }
 
 func java(args []string) {
 	dShowCWD()
+	if len(*pFlag) != 0 {
+		previewOption := []string{"--enable-preview"}
+		args = append(previewOption, args...)
+	}
 	execCommand("java", args...)
 }
 

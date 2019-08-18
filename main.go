@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2019 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -87,6 +87,7 @@ var vFlag = flag.Bool("v", false, "verbose for test command")
 var eFlag = flag.String("encoding", "utf-8", "encoding")
 var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
 var tempFlag = flag.String("temp", defaultTempDir, "temporary working directory")
+var pFlag = flag.String("p", "", "enable preview")
 
 func vPrintf(format string, args ...interface{}) {
 	if *vFlag {
@@ -147,7 +148,7 @@ func parseVerboseFlag() []string {
 func recreateBin() {
 
 	if *lFlag {
-		// Make sure that the directoy exists.
+		// Make sure that the directory exists.
 		dir, err := os.Open(oakBinPath)
 		if err == nil {
 			dir.Close()

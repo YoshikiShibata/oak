@@ -2,8 +2,8 @@
 
 package main
 
-const runnerVersion="1.1"
-const runner="jp.ne.sonet.ca2.yshibata.JUnitRunner"
+const runnerVersion = "1.1"
+const runner = "jp.ne.sonet.ca2.yshibata.JUnitRunner"
 
 const runnerJavaSrc = `
 /*

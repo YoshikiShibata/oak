@@ -288,9 +288,23 @@ func junitClassPath() string {
 		exit(err, codeError)
 	}
 
-	if len(jarFiles) != 2 {
-		exit(fmt.Errorf("Jar files of JUNIT are not found"), codeError)
+	/*
+		if len(jarFiles) != 4 {
+			exit(fmt.Errorf("Jar files of JUNIT are not found"), codeError)
+		}
+	*/
+	var builder strings.Builder
+	for i, jarFile := range jarFiles {
+		builder.WriteString(junitPath)
+		builder.WriteString(PS)
+		builder.WriteString(jarFile)
+		if i < len(jarFiles)-1 {
+			builder.WriteString(PLS)
+		}
 	}
-	return junitPath + PS + jarFiles[0] + PLS +
-		junitPath + PS + jarFiles[1]
+	return builder.String()
+	/*
+		return junitPath + PS + jarFiles[0] + PLS +
+			junitPath + PS + jarFiles[1]
+	*/
 }

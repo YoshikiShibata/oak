@@ -11,11 +11,12 @@ import org.junit.Test;
  * as Linux or Mac OS X.
  */
 public class ListAllSubdirectoriesTest {
+    private final String userHome = System.getProperty("user.home");
 
     @Test
     public void listAllSubDirectories() {
         // Prepare
-        File dir = Directories.toDirectory("/usr/include");
+        File dir = Directories.toDirectory(userHome);
         assertNotNull(dir);
 
         // Action

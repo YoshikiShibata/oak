@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017 Yoshiki Shibata. All rights reserved.
+ * Copyright (C) 2016, 2017, 2019 Yoshiki Shibata. All rights reserved.
  */
 package jp.ne.sonet.ca2.yshibata;
 
@@ -19,6 +19,8 @@ import org.junit.runner.manipulation.Filter;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
+import org.junit.platform.console.ConsoleLauncher;
+
 /**
  * JUnitRunner supports -v option
  *
@@ -27,10 +29,12 @@ import org.junit.runner.notification.RunListener;
 public class JUnitRunner {
 
     private static boolean verbose = false;
+	private static boolean junit5 = true; // now default
     private static String methodPattern = ".";
     private static Pattern pattern;
 
     public static void main(String[] args) {
+		List<String> testClassNames = new ArrayList<>();
         if (args.length == 0) {
             showUsage();
         }
@@ -38,21 +42,34 @@ public class JUnitRunner {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-v")) {
                 verbose = true;
-                args[i] = null;
                 continue;
             }
+			
+			if (args[i].equals("-junit5")) {
+			    junit5 = true;
+			    continue;
+			}
 
             if (args[i].startsWith("-run=", 0)) {
                 methodPattern = args[i].split("=")[1];
-                args[i] = null;
                 continue;
             }
+			testClassNames.add(args[i]);
         }
+
+		if (junit5) {
+			List<String> clArgs = new ArrayList<>();
+			for (String className: testClassNames) {
+				clArgs.add("-c=" + className);
+			}
+	        ConsoleLauncher.main(clArgs.toArray(new String[0]));
+		    return;
+		}
 
         pattern = Pattern.compile(methodPattern);
 
         List<Class<?>> classes = new ArrayList<>();
-        for (String testClassName : args) {
+        for (String testClassName : testClassNames) {
             if (testClassName == null) {
                 continue;
             }

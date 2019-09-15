@@ -1,14 +1,14 @@
 #!/bin/bash 
 
-# Copyright (C) 2017 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2017, 2019 Yoshiki Shibata. All rights reserved.
 
 function createRunner {
     rm -f runner.go
-    echo "// Copyright (C) 2016 Yoshiki Shibata. All rights reserved." > runner.go
+    echo "// Copyright (C) 2016, 2019 Yoshiki Shibata. All rights reserved." > runner.go
     echo "" >> runner.go
     echo "package main" >> runner.go
     echo "" >> runner.go
-	echo "const runnerVersion=\"1.1\"" >> runner.go
+	echo "const runnerVersion=\"1.2\"" >> runner.go
     echo "const runner=\"jp.ne.sonet.ca2.yshibata.JUnitRunner\"" >> runner.go
     echo "" >> runner.go
     echo "const runnerJavaSrc = \`" >> runner.go
@@ -33,8 +33,13 @@ fi
 
 TOP_DIR=$PWD
 
+# JavaFX
+#		bugfixes/002 \
+#		issues/047 \
+
 # Execute tests
 for dir in simpleRun \
+		junit5 \
 		simpleTest1 \
 		simpleTest1_2 \
 		simpleTest2 \
@@ -43,7 +48,6 @@ for dir in simpleRun \
 		packageTest_2 \
 		packageTest_3 \
 		bugfixes/001 \
-		bugfixes/002 \
 		issues/008 \
 		issues/013 \
 		issues/019 \
@@ -56,7 +60,6 @@ for dir in simpleRun \
 		issues/039 \
 		issues/040 \
 		issues/044 \
-		issues/047 \
 		issues/049 \
 		issues/051 \
 		issues/053 \

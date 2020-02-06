@@ -24,6 +24,8 @@ To install oak, you need [**go** command](https://golang.org/).
 
 4. After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
 
+5. For JavaFX application, you need to install JavaFX SDK from [OpenJFX](https://openjfx.io/). After installing JavaFX SDK, set `PATH_TO_FX` environment variable to its `lib` directory. Now oak automatically use `javafx.controls`, `javafx.fxml`, and `javafx.web` modules if the environment variable is set.
+
 ## **Commands**
 
 To use oak, you have to change the currently directory to the directory where Java source files are located and then run oak command.

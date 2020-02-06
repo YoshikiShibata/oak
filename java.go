@@ -12,6 +12,20 @@ import (
 	"time"
 )
 
+func javaFXOptions() []string {
+	pathToFX, ok := os.LookupEnv("PATH_TO_FX")
+	if !ok {
+		return nil
+	}
+	return []string{
+		"--module-path",
+		pathToFX,
+		"--add-modules",
+		"javafx.controls,javafx.fxml,javafx.web",
+		// "javafx.controls,javafx.fxml",
+	}
+}
+
 func javac(args []string) {
 	dShowCWD()
 	lintOptions := []string{"-Xlint:unchecked", "-Xlint:deprecation"}
@@ -23,7 +37,11 @@ func javac(args []string) {
 	case "13":
 		previewOption := []string{"--enable-preview", "--release=13"}
 		args = append(previewOption, args...)
+	case "14":
+		previewOption := []string{"--enable-preview", "--release=14"}
+		args = append(previewOption, args...)
 	}
+	args = append(javaFXOptions(), args...)
 	execCommand("javac", args...)
 }
 
@@ -33,6 +51,7 @@ func java(args []string) {
 		previewOption := []string{"--enable-preview"}
 		args = append(previewOption, args...)
 	}
+	args = append(javaFXOptions(), args...)
 	execCommand("java", args...)
 }
 

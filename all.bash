@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# Copyright (C) 2017, 2019 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2017, 2019, 2020 Yoshiki Shibata. All rights reserved.
 
 function createRunner {
     rm -f runner.go
@@ -16,13 +16,13 @@ function createRunner {
     echo "\`">> runner.go
 }
 
-export OAK_HOME=$PWD
+export OAK_HOME="$PWD"
 echo ""
 
 createRunner
 
-rm -fr $OAK_HOME/bin
-mkdir $OAK_HOME/bin
+rm -fr "$OAK_HOME/bin"
+mkdir "$OAK_HOME/bin"
 
 echo "building ... "
 go build -o bin/oak
@@ -31,7 +31,7 @@ then
     exit 1
 fi
 
-TOP_DIR=$PWD
+TOP_DIR="$PWD"
 
 # JavaFX
 #		bugfixes/002 \
@@ -71,7 +71,7 @@ for dir in simpleRun \
 		issues/064 \
 		issues/068;
 do
-    cd $TOP_DIR/tests/$dir
+    cd "$TOP_DIR/tests/$dir"
 	echo ""
 	echo "Testing ... " $dir
     ./run.bash

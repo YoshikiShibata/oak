@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Copyright (C) 2017 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2017, 2020 Yoshiki Shibata. All rights reserved.
 
 cd src/jpl/ch14/ex04
-$OAK_HOME/bin/oak run 
+"$OAK_HOME/bin/oak" run 
 
 if [ $? != 0 ]
 then

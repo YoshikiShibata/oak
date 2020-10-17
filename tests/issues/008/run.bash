@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2016, 2020 Yoshiki Shibata. All rights reserved.
 
 cd src/ch05/ex04
 
-$OAK_HOME/bin/oak run -v Cal.java 11 1959
+"$OAK_HOME/bin/oak" run -v Cal.java 11 1959
 
 if [ $? != 0 ]
 then

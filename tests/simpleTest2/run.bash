@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2016, 2020 Yoshiki Shibata. All rights reserved.
 
 cd src
 
-$OAK_HOME/bin/oak test -v
+"$OAK_HOME/bin/oak" test -v
 
 if [ $? != 0 ]
 then
@@ -13,7 +13,7 @@ fi
 
 cd ../test
 
-$OAK_HOME/bin/oak test -v
+"$OAK_HOME/bin/oak" test -v
 
 if [ $? != 0 ]
 then

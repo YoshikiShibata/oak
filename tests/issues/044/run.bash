@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2016, 2020 Yoshiki Shibata. All rights reserved.
 
 cd test/jpl/ch06/ex01
 
-$OAK_HOME/bin/oak test
+"$OAK_HOME/bin/oak" test
 
 if [ $? != 0 ]
 then

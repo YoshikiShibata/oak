@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Copyright (C) 2017 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2017, 2020 Yoshiki Shibata. All rights reserved.
 
 cd src/ch05/ex07
-$OAK_HOME/bin/oak test 
+"$OAK_HOME/bin/oak" test 
 
 if [ $? != 0 ]
 then

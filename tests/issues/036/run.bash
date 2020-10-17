@@ -2,10 +2,10 @@
 
 # Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
 
-TOP_DIR=$PWD
+TOP_DIR="$PWD"
 
 echo "testing from $PWD"
-$OAK_HOME/bin/oak run "Hello, World!"
+"$OAK_HOME/bin/oak" run "Hello, World!"
 
 if [ $? != 0 ]
 then

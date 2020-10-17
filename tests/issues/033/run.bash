@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Copyright (C) 2016 Yoshiki Shibata. All rights reserved.
+# Copyright (C) 2016, 2020 Yoshiki Shibata. All rights reserved.
 
-TOP_DIR=$PWD
+TOP_DIR="$PWD"
 
 cd test
 echo "testing from $PWD"
-$OAK_HOME/bin/oak test
+"$OAK_HOME/bin/oak" test
 
 if [ $? == 0 ]
 then

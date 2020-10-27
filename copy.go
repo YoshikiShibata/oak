@@ -1,12 +1,12 @@
-// Copyright © 2017 Yoshiki Shibata. All rights reserved.
-
-// +build ignore
+// Copyright © 2017, 2020 Yoshiki Shibata. All rights reserved.
 
 package main
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/YoshikiShibata/tools/util/files"
@@ -57,7 +57,32 @@ func listNonJavaFiles(dir string) (result []nonJavaFile) {
 	return
 }
 
-func main() {
-	result := listNonJavaFiles(".")
-	fmt.Printf("%v\n", result)
+func copyFile(root string, file nonJavaFile) error {
+	targetDir := fmt.Sprintf("%s%c%s", root, os.PathSeparator, file.dir)
+	targetDir = filepath.Clean(targetDir)
+	dPrintf("copy %s to %s\n", file.file, targetDir)
+
+	err := os.MkdirAll(targetDir, 0777)
+	if err != nil {
+		return fmt.Errorf("MkdirAll failed: %w", err)
+	}
+	targetFile := fmt.Sprintf("%s%c%s", targetDir, os.PathSeparator, file.file)
+	dstFile, err := os.Create(targetFile)
+	if err != nil {
+		return fmt.Errorf("os.Create(%s) failed: %w", targetFile, err)
+	}
+	defer dstFile.Close()
+
+	sourceFile := fmt.Sprintf("%s%c%s", file.dir, os.PathSeparator, file.file)
+	srcFile, err := os.Open(sourceFile)
+	if err != nil {
+		return fmt.Errorf("os.Open(%s) failed: %w", file.file, err)
+	}
+	defer srcFile.Close()
+
+	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return fmt.Errorf("is.Copy failed: %w", err)
+	}
+	return nil
 }

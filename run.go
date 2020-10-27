@@ -122,6 +122,7 @@ func isMainMethod(line string) bool {
 
 func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string, srcPath string) {
 	compile(srcs, srcPath)
+	copyNonJavaFiles()
 	changeDirectoryTo(runPath)
 	run(runPath, mainSrc, javaArgs)
 }
@@ -133,6 +134,15 @@ func compile(srcs []string, srcPath string) {
 	}
 	args = append(args, srcs...)
 	javac(args)
+}
+
+func copyNonJavaFiles() {
+	for _, file := range listNonJavaFiles(".") {
+		err := copyFile(oakBinPath, file)
+		if err != nil {
+			fmt.Printf("copyFile failed: %v\n", err)
+		}
+	}
 }
 
 func run(runPath, mainSrc string, javaArgs []string) {

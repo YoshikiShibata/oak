@@ -31,14 +31,8 @@ func javac(args []string) {
 	lintOptions := []string{"-Xlint:unchecked", "-Xlint:deprecation"}
 	args = append(lintOptions, args...)
 	switch *pFlag {
-	case "12":
-		previewOption := []string{"--enable-preview", "--release=12"}
-		args = append(previewOption, args...)
-	case "13":
-		previewOption := []string{"--enable-preview", "--release=13"}
-		args = append(previewOption, args...)
-	case "14":
-		previewOption := []string{"--enable-preview", "--release=14"}
+	case "12", "13", "14", "15", "16", "17":
+		previewOption := []string{"--enable-preview", "--release=" + *pFlag}
 		args = append(previewOption, args...)
 	}
 	args = append(javaFXOptions(), args...)

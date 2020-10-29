@@ -1,4 +1,4 @@
-// Copyright © 2016, 2019 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2019, 2020 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -243,7 +243,6 @@ func compileAsTest(sourcepath, src string) {
 }
 
 func compileAndRunTest(runDir, sourcepath, srcFilePath string, options []string) {
-
 	compileAsTest(sourcepath, srcFilePath)
 
 	changeDirectoryTo(runDir)
@@ -264,6 +263,7 @@ func compileAndRunTest(runDir, sourcepath, srcFilePath string, options []string)
 	srcPackagePath := strings.Replace(srcFilePath, PS, ".", -1)
 	srcPackagePath = srcPackagePath[:len(srcPackagePath)-len(".java")]
 	args = append(args, srcPackagePath)
+	args = append(javaFXOptions(), args...)
 
 	javaOneMinuteTimeout(args, codeTestsFailed)
 }

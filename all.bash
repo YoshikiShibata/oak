@@ -2,24 +2,8 @@
 
 # Copyright (C) 2017, 2019, 2020 Yoshiki Shibata. All rights reserved.
 
-function createRunner {
-    rm -f runner.go
-    echo "// Copyright (C) 2016, 2019 Yoshiki Shibata. All rights reserved." > runner.go
-    echo "" >> runner.go
-    echo "package main" >> runner.go
-    echo "" >> runner.go
-	echo "const runnerVersion=\"1.2\"" >> runner.go
-    echo "const runner=\"jp.ne.sonet.ca2.yshibata.JUnitRunner\"" >> runner.go
-    echo "" >> runner.go
-    echo "const runnerJavaSrc = \`" >> runner.go
-    cat runner/src/jp/ne/sonet/ca2/yshibata/JUnitRunner.java >> runner.go
-    echo "\`">> runner.go
-}
-
 export OAK_HOME="$PWD"
 echo ""
-
-createRunner
 
 rm -fr "$OAK_HOME/bin"
 mkdir "$OAK_HOME/bin"

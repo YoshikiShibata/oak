@@ -245,6 +245,7 @@ func compileAsTest(sourcepath, src string) {
 func compileAndRunTest(runDir, sourcepath, srcFilePath string, options []string) {
 	compileAsTest(sourcepath, srcFilePath)
 
+	copyNonJavaFiles()
 	changeDirectoryTo(runDir)
 
 	args := []string{"-classpath", oakBinPath + PLS + "src" + PLS + junitPath}

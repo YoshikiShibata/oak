@@ -21,7 +21,7 @@ func javaFXOptions() []string {
 		"--module-path",
 		pathToFX,
 		"--add-modules",
-		"javafx.controls,javafx.fxml,javafx.web",
+		"javafx.controls,javafx.fxml,javafx.web,javafx.swing",
 		// "javafx.controls,javafx.fxml",
 	}
 }

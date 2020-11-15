@@ -30,6 +30,7 @@ func exit(err error, exitCode int) {
 }
 
 func changeDirectoryTo(path string) {
+	dPrintf("change directory to %s\n", path)
 	err := os.Chdir(path)
 	if err != nil {
 		exit(err, 1)

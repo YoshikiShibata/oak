@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2020 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -41,8 +41,20 @@ func runRun(cmd *Command, args []string) {
 	if len(args) == 0 {
 		args = findMainSourceFiles()
 		if len(args) == 0 {
-			exit(fmt.Errorf("No main Java file found"), codeNoMainMethod)
+			jarFiles := listJarFiles(".")
+			if len(jarFiles) == 0 {
+				exit(fmt.Errorf("No main Java file found"),
+					codeNoMainMethod)
+			}
+			// use the first jar
+			java([]string{"-jar", jarFiles[0]})
+			return
 		}
+	}
+
+	if strings.HasSuffix(args[0], ".jar") {
+		java([]string{"-jar", args[0]})
+		return
 	}
 
 	if !strings.HasSuffix(args[0], ".java") {

@@ -6,7 +6,8 @@ Oak is not a general purpose tool to compile and run any Java projects, but a ut
 Currently following commands are supported:
 
 * oak help 
-* oak run [Java file] [arguments]
+* oak run [Java source file] [arguments]
+* oak run [jar file]
 * oak test [-v]
 * oak version
 
@@ -32,7 +33,7 @@ To use oak, you have to change the currently directory to the directory where Ja
 
 * **help** command shows the help messages.
 
-* **run** command compiles the specified Java file and run its main method. If java file is not specified such as `oak run`, then all `.java` files are searched locally and the first one which has a line starting with either `public static void main` or `static public void main` will be considered as the java file.
+* **run** command compiles the specified Java file and run its main method. If java file is not specified such as `oak run`, then all `.java` files are searched locally and the first one which has a line starting with either `public static void main` or `static public void main` will be considered as the java file. If no such java file is not found, then jar files are searched locally and the first one will be executed with `-jar`.
 
 * **test** command compiles all JUnit-based test Java files and run all test methods.
 `-v` option shows both names of test class and test method. `-run=` option accept a regular expression for filtering test methods. For example, `-run=.` will run all tests.

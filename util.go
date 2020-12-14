@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2020 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -81,6 +81,17 @@ func listJavaFiles(dir string) []string {
 		return nil
 	}
 	return javaFiles
+}
+
+func listJarFiles(dir string) []string {
+	jarFiles, err := files.ListFiles(dir, func(file string) bool {
+		return strings.HasSuffix(file, ".jar")
+	})
+	if err != nil {
+		// Any error results in an empty list
+		return nil
+	}
+	return jarFiles
 }
 
 func listTestFiles(dir string) []string {

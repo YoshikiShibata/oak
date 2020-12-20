@@ -56,7 +56,8 @@ for dir in simpleRun \
 		issues/066 \
 		issues/068 \
 		issues/071 \
-		issues/074;
+		issues/074 \
+		issues/076;
 do
     cd "$TOP_DIR/tests/$dir"
 	echo ""

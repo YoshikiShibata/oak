@@ -68,8 +68,8 @@ func runRun(cmd *Command, args []string) {
 	recreateBin()
 
 	javaFiles := listNonTestFiles(".")
-	// Sometimes the main method is in a source file of which suffix is "Test.java": if so,
-	// add the args[0] to javaFiles.
+	// Sometimes the main method is in a source file of which suffix is
+	// "Test.java": if so, add the args[0] to javaFiles.
 	if !slices.ContainsString(javaFiles, args[0]) {
 		javaFiles = append(javaFiles, args[0])
 	}
@@ -129,10 +129,16 @@ func containsMainMethod(javaFile string) bool {
 func isMainMethod(line string) bool {
 	return strings.Index(line, "public static void main(") >= 0 ||
 		strings.Index(line, "static public void main(") >= 0 ||
-		strings.Index(line, "public void start(Stage") >= 0
+		(strings.Index(line, "public void start(") >= 0 &&
+			strings.Index(line, "Stage") >= 0) // for "final Stage"
 }
 
-func compileAndRun(runPath, mainSrc string, srcs []string, javaArgs []string, srcPath string) {
+func compileAndRun(
+	runPath, mainSrc string,
+	srcs []string,
+	javaArgs []string,
+	srcPath string,
+) {
 	compile(srcs, srcPath)
 	copyNonJavaFiles()
 	changeDirectoryTo(runPath)

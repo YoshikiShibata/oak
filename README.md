@@ -45,3 +45,6 @@ If tests will not be completed within one minute, then they will be aborted.
 
 * If source files and test files are located separately, then they must be located under `src` and `test` directories respectively.  
 * The encoding of Java source files must be UTF-8.
+
+
+Copyright (C) 2016 Yoshiki Shibata. All rights reserved.

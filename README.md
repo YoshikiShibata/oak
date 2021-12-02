@@ -47,4 +47,4 @@ If tests will not be completed within one minute, then they will be aborted.
 * The encoding of Java source files must be UTF-8.
 
 
-Copyright (C) 2016, 2017, 2020 Yoshiki Shibata. All rights reserved.
+Copyright (C) 2016, 2017, 2020, 2021 Yoshiki Shibata. All rights reserved.

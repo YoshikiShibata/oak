@@ -16,16 +16,13 @@ Currently following commands are supported:
 To install oak, you need [**go** command](https://golang.org/), which must be Go 1.18+.
 
 1. You have to install oak with the following command:
-`go install github.com/YoshikiShibata/oak`. 
+  - `go install github.com/YoshikiShibata/oak@latest`. 
 
-2. If you want to update the oak to the latest version:
-`go get -u github.com/YoshikiShibata/oak`.
+2. **oak** command will be build as `$GOPATH/bin/oak`.
 
-3. **oak** command will be build as `$GOPATH/bin/oak`.
+3. After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
 
-4. After installing, then set `OAK_HOME` environment variable to the installed directory which is typically `$GOPATH/src/github.com/YoshikiShibata/oak`.
-
-5. For JavaFX application, you need to install JavaFX SDK from [OpenJFX](https://openjfx.io/). After installing JavaFX SDK, set `PATH_TO_FX` environment variable to its `lib` directory. Now oak automatically use `javafx.controls`, `javafx.fxml`, `javafx.web`, and `javafx.swing` modules if the environment variable is set.
+4. For JavaFX application, you need to install JavaFX SDK from [OpenJFX](https://openjfx.io/). After installing JavaFX SDK, set `PATH_TO_FX` environment variable to its `lib` directory. Now oak automatically use `javafx.controls`, `javafx.fxml`, `javafx.web`, and `javafx.swing` modules if the environment variable is set.
 
 ## **Commands**
 

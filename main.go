@@ -89,7 +89,7 @@ var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
 var tempFlag = flag.String("temp", defaultTempDir, "temporary working directory")
 var pFlag = flag.String("p", "", "enable preview")
 
-func vPrintf(format string, args ...interface{}) {
+func vPrintf(format string, args ...any) {
 	if *vFlag {
 		fmt.Printf(format, args...)
 	}

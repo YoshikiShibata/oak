@@ -9,7 +9,7 @@ import (
 
 var dFlag = flag.Bool("d", false, "debug")
 
-func dPrintf(format string, args ...interface{}) {
+func dPrintf(format string, args ...any) {
 	if *dFlag {
 		fmt.Printf(format, args...)
 	}

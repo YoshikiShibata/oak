@@ -16,7 +16,9 @@ Currently following commands are supported:
 To install oak, you need [**go** command](https://golang.org/), which must be Go 1.18+.
 
 1. You have to install oak with the following command:
-  - `go install github.com/YoshikiShibata/oak@latest`. 
+```
+go install github.com/YoshikiShibata/oak@latest 
+```
 
 2. **oak** command will be build as `$GOPATH/bin/oak`.
 

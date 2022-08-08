@@ -1,4 +1,4 @@
-// Copyright © 2016 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2022 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -30,7 +30,10 @@ func startTrace() *os.File {
 		log.Fatal("could not create trace file:", err)
 		exit(err, 1)
 	}
-	trace.Start(profFile)
+	err = trace.Start(profFile)
+	if err != nil {
+		log.Fatalf("trace.Start failed: %v", err)
+	}
 	return profFile
 }
 

@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017, 2019, 2020 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2019, 2020, 2022 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -7,7 +7,7 @@ import (
 	"runtime"
 )
 
-const oakVersion = "1.91"
+const oakVersion = "1.92"
 
 var cmdVersion = &Command{
 	Run:       runVersion,

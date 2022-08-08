@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017, 2019 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2019, 2022 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -88,12 +88,6 @@ var eFlag = flag.String("encoding", "utf-8", "encoding")
 var lFlag = flag.Bool("l", false, "leave oak/bin (don't delete it)")
 var tempFlag = flag.String("temp", defaultTempDir, "temporary working directory")
 var pFlag = flag.String("p", "", "enable preview")
-
-func vPrintf(format string, args ...any) {
-	if *vFlag {
-		fmt.Printf(format, args...)
-	}
-}
 
 func main() {
 	flag.Parse()

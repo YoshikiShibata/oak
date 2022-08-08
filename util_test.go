@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func TestEscapeUnicode(t *testing.T) {
+func TestUnescapeUnicode(t *testing.T) {
 	for _, test := range []struct {
 		data     string
 		expected string
@@ -11,7 +11,7 @@ func TestEscapeUnicode(t *testing.T) {
 		{`\u0020`, " "},
 		{`ab\u0020cd`, "ab cd"},
 	} {
-		result := escapeUnicode(test.data)
+		result := unescapeUnicode(test.data)
 
 		if result != test.expected {
 			t.Errorf("result is %q, but want %q\n", result, test.expected)

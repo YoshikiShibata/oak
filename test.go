@@ -1,4 +1,4 @@
-// Copyright © 2016, 2019, 2020 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2019, 2020, 2022 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -73,7 +73,7 @@ func generateJUnitRunnerSource() string {
 	if err != nil {
 		exit(err, codeError)
 	}
-	f.WriteString(runnerJavaSrc)
+	_, _ = f.WriteString(runnerJavaSrc)
 	f.Close()
 
 	return strings.Join(paths, PS) + ".java"

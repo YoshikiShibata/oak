@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017, 2020 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2020, 2022 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -127,10 +127,10 @@ func containsMainMethod(javaFile string) bool {
 }
 
 func isMainMethod(line string) bool {
-	return strings.Index(line, "public static void main(") >= 0 ||
-		strings.Index(line, "static public void main(") >= 0 ||
-		(strings.Index(line, "public void start(") >= 0 &&
-			strings.Index(line, "Stage") >= 0) // for "final Stage"
+	return strings.Contains(line, "public static void main(") ||
+		strings.Contains(line, "static public void main(") ||
+		(strings.Contains(line, "public void start(") &&
+			strings.Contains(line, "Stage")) // for "final Stage"
 }
 
 func compileAndRun(

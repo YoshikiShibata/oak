@@ -1,4 +1,4 @@
-// Copyright © 2016, 2017, 2019 Yoshiki Shibata. All rights reserved.
+// Copyright © 2016, 2017, 2019 - 2022 Yoshiki Shibata. All rights reserved.
 
 package main
 
@@ -21,7 +21,7 @@ func javaFXOptions() []string {
 		"--module-path",
 		pathToFX,
 		"--add-modules",
-		"javafx.controls,javafx.fxml,javafx.web,javafx.swing",
+		"javafx.controls,javafx.fxml,javafx.web,javafx.swing,javafx.graphics",
 		// "javafx.controls,javafx.fxml",
 	}
 }
